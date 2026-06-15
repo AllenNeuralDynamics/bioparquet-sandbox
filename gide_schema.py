@@ -123,6 +123,15 @@ channel_biological_entity = pa.struct(
     ]
 )
 
+# A single imaging channel: what it captures (FBbi content) plus the
+# biological entity it targets. Datasets can have many channels.
+channel = pa.struct(
+    [
+        pa.field("content", ontology_term(source=False)),  # FBbi
+        pa.field("biological_entity", channel_biological_entity),
+    ]
+)
+
 instrument = pa.struct(
     [
         pa.field("name", pa.string()),  # 4DN-BINA-OME-QUAREP (NBO-Q) compliant
@@ -255,18 +264,11 @@ GIDE_SCHEMA = pa.schema(
             query="Antibody ID, term",
         ),
         col(
-            "channel_content",
-            pa.list_(ontology_term(source=False)),  # FBbi
-            description="Content related to the channel",
-            fmt="FBbi term and ID",
-            query="Channel content ID, term",
-        ),
-        col(
-            "channel_biological_entity",
-            pa.list_(channel_biological_entity),
-            description="Biological entities related to the channel",
-            fmt="Experimental Factor Ontology term and UniProt ID",
-            query="Biological entity ID, term",
+            "channels",
+            pa.list_(channel),
+            description="Information about the imaging channels (content and biological entity)",
+            fmt="FBbi term and ID (content); Experimental Factor Ontology term and UniProt ID (biological entity)",
+            query="Channel content ID/term, Biological entity ID/term",
         ),
         col(
             "instrument",

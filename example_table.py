@@ -89,11 +89,17 @@ ROWS = {
             }
         ]
     ],
-    "channel_content": [
-        [{"term_id": "FBbi:00000379", "term_label": "fluorescence emission"}]
-    ],
-    "channel_biological_entity": [
-        [{"efo_term_id": "EFO:0004542", "efo_term_label": "mitochondrion", "uniprot_id": "Q9P0U4"}]
+    "channels": [
+        [
+            {
+                "content": {"term_id": "FBbi:00000379", "term_label": "fluorescence emission"},
+                "biological_entity": {
+                    "efo_term_id": "EFO:0004542",
+                    "efo_term_label": "mitochondrion",
+                    "uniprot_id": "Q9P0U4",
+                },
+            }
+        ]
     ],
     "instrument": [{"name": "Zeiss LSM 980 (NBO-Q compliant)", "instrument_id": "21.T11998/instrument-lsm980"}],
     "dimensions": [
