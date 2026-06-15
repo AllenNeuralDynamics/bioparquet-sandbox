@@ -2,7 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyarrow>=16"]
 # ///
-"""Parquet schema for the foundingGIDE bioimaging metadata fields.
+"""bioparquet: the foundingGIDE bioimaging metadata standard implemented in Parquet.
 
 The schema is derived 1:1 from ``foundingGIDE_metadata_fields.md``. Each row of
 that table is a metadata *component*; here each component becomes one top-level
@@ -174,9 +174,9 @@ analyzed_data = pa.struct(
 )
 
 
-# --- The GIDE schema -------------------------------------------------------
+# --- The bioparquet schema -------------------------------------------------
 
-GIDE_SCHEMA = pa.schema(
+BIOPARQUET_SCHEMA = pa.schema(
     [
         col(
             "study_description",
@@ -341,19 +341,19 @@ GIDE_SCHEMA = pa.schema(
 
 
 def main() -> None:
-    print(GIDE_SCHEMA.to_string(show_field_metadata=False))
-    print(f"\n{len(GIDE_SCHEMA)} top-level components.")
+    print(BIOPARQUET_SCHEMA.to_string(show_field_metadata=False))
+    print(f"\n{len(BIOPARQUET_SCHEMA)} top-level components.")
 
     # Write an empty, schema-only Parquet file as a reusable template.
-    out = "gide_metadata.parquet"
-    empty = GIDE_SCHEMA.empty_table()
+    out = "bioparquet_metadata.parquet"
+    empty = BIOPARQUET_SCHEMA.empty_table()
     pq.write_table(empty, out)
 
     # Round-trip to prove the schema is valid and persisted intact. Parquet adds
     # its own "ARROW:schema" metadata on write, so compare structure (types)
     # strictly and confirm the field-level documentation survived separately.
     back = pq.read_schema(out)
-    assert back.equals(GIDE_SCHEMA, check_metadata=False), "schema round-trip mismatch"
+    assert back.equals(BIOPARQUET_SCHEMA, check_metadata=False), "schema round-trip mismatch"
     assert back.field("study_description").metadata[b"description"] == b"Description of the study"
     print(f"Wrote schema-only template -> {out} (round-trip OK, field docs preserved)")
 

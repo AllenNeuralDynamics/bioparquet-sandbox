@@ -1,8 +1,8 @@
-# foundingGIDE metadata — Parquet schema
+# bioparquet
 
-A PyArrow Parquet schema derived from
-[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md), the
-founding Global Image Data Exchange (GIDE) bioimaging metadata specification.
+A PyArrow Parquet implementation of the **foundingGIDE** (Global Image Data
+Exchange) bioimaging metadata standard. The schema is derived from
+[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md).
 
 ## Model
 
@@ -24,16 +24,16 @@ columns:
 ## Usage
 
 ```bash
-uv run gide_schema.py
+uv run bioparquet_schema.py
 ```
 
-This prints the schema and writes `gide_metadata.parquet` — an empty,
+This prints the schema and writes `bioparquet_metadata.parquet` — an empty,
 schema-only template you can append rows to.
 
 Import the schema directly:
 
 ```python
-from gide_schema import GIDE_SCHEMA
+from bioparquet_schema import BIOPARQUET_SCHEMA
 ```
 
 ## Example
@@ -44,13 +44,13 @@ uv run example_table.py
 
 `example_table.py` populates every component with a realistic dataset row
 (a fictional human iPSC cardiomyocyte live-imaging study), writes it to
-`gide_example.parquet`, and reads it back to confirm the data validates
-against `GIDE_SCHEMA`. It also serves as a reference for how to construct
+`bioparquet_example.parquet`, and reads it back to confirm the data validates
+against `BIOPARQUET_SCHEMA`. It also serves as a reference for how to construct
 rows — nested structs as plain dicts, repeatable components as lists:
 
 ```python
 import pyarrow as pa
-from gide_schema import GIDE_SCHEMA
+from bioparquet_schema import BIOPARQUET_SCHEMA
 
-table = pa.table(ROWS, schema=GIDE_SCHEMA)  # validates against the schema
+table = pa.table(ROWS, schema=BIOPARQUET_SCHEMA)  # validates against the schema
 ```

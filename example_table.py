@@ -2,7 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyarrow>=16"]
 # ///
-"""Build an example GIDE metadata table conforming to ``GIDE_SCHEMA``.
+"""Build an example bioparquet metadata table conforming to ``BIOPARQUET_SCHEMA``.
 
 Populates one realistic dataset row (a fictional human iPSC live-imaging study)
 across every component, writes it to Parquet, then reads it back to confirm the
@@ -16,7 +16,7 @@ import datetime as dt
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from gide_schema import GIDE_SCHEMA
+from bioparquet_schema import BIOPARQUET_SCHEMA
 
 # One row, given as a column-name -> list-of-values mapping (one element per
 # row). Nested structs are plain dicts; lists are Python lists. Any component
@@ -145,10 +145,10 @@ ROWS = {
 
 
 def main() -> None:
-    table = pa.table(ROWS, schema=GIDE_SCHEMA)
-    assert table.schema.equals(GIDE_SCHEMA, check_metadata=False)
+    table = pa.table(ROWS, schema=BIOPARQUET_SCHEMA)
+    assert table.schema.equals(BIOPARQUET_SCHEMA, check_metadata=False)
 
-    out = "gide_example.parquet"
+    out = "bioparquet_example.parquet"
     pq.write_table(table, out)
 
     back = pq.read_table(out)

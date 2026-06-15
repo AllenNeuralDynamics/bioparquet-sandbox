@@ -1,7 +1,7 @@
 # foundingGIDE Metadata Fields
 
 The founding Global Image Data Exchange (GIDE) bioimaging metadata
-specification. This file is the canonical source for `gide_schema.py`.
+specification. This file is the canonical source for `bioparquet_schema.py`.
 
 | Component | Description | Format | Access Query |
 | --- | --- | --- | --- |

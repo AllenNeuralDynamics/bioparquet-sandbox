@@ -5,7 +5,7 @@ __pycache__/
 .uv/
 
 # Generated artifacts
-gide_metadata.parquet
+bioparquet_metadata.parquet
 
 # OS
 .DS_Store
