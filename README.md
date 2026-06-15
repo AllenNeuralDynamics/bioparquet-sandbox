@@ -6,8 +6,8 @@ Exchange) bioimaging metadata standard. The schema is derived from
 
 ## Model
 
-One row = one dataset/study. The metadata *components* become 22 top-level
-columns:
+One row = one data asset (a study is composed of many data assets, so `study_id`
+repeats across them). The metadata *components* become 22 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
@@ -42,7 +42,7 @@ from bioparquet_schema import BIOPARQUET_SCHEMA
 uv run example_table.py
 ```
 
-`example_table.py` populates every component with a realistic dataset row
+`example_table.py` populates every component with a realistic data asset row
 (a fictional human iPSC cardiomyocyte live-imaging study), writes it to
 `bioparquet_example.parquet`, and reads it back to confirm the data validates
 against `BIOPARQUET_SCHEMA`. It also serves as a reference for how to construct

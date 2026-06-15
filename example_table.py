@@ -4,7 +4,7 @@
 # ///
 """Build an example bioparquet metadata table conforming to ``BIOPARQUET_SCHEMA``.
 
-Populates one realistic dataset row (a fictional human iPSC live-imaging study)
+Populates one realistic data asset row (a fictional human iPSC live-imaging study)
 across every component, writes it to Parquet, then reads it back to confirm the
 data validates against the schema.
 """
@@ -119,8 +119,8 @@ ROWS = {
             {"axis": "t", "size": 30.0, "unit": "second"},
         ]
     ],
-    "study_unique_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
-    "dataset_unique_id": ["S-BIAD1234-1"],
+    "study_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
+    "data_asset_id": ["S-BIAD1234-1"],
     "pathology_disease": [
         [{"ontology_source": "MONDO", "term_id": "MONDO:0005267", "term_label": "heart disorder"}]
     ],
@@ -137,7 +137,7 @@ ROWS = {
                 "github_url": "https://github.com/example/mito-seg/releases/tag/v1.2.0",
                 "doi": "10.5281/zenodo.9999999",
                 "rrid": "SCR_999999",
-                "dataset_id": "S-BIAD1234-1",
+                "data_asset_id": "S-BIAD1234-1",
             }
         ]
     ],

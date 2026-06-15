@@ -6,7 +6,8 @@
 
 The schema is derived 1:1 from ``foundingGIDE_metadata_fields.md``. Each row of
 that table is a metadata *component*; here each component becomes one top-level
-column of a single wide table whose grain is **one row per dataset/study**.
+column of a single wide table whose grain is **one row per data asset**
+(a study is composed of many data assets; ``study_id`` repeats across them).
 
 Design notes
 ------------
@@ -123,7 +124,7 @@ channel_biological_entity = pa.struct(
 )
 
 # A single imaging channel: what it captures (FBbi content) plus the
-# biological entity it targets. Datasets can have many channels.
+# biological entity it targets. Data assets can have many channels.
 channel = pa.struct(
     [
         pa.field("content", ontology_term(source=False)),  # FBbi
@@ -156,7 +157,7 @@ resolution = pa.struct(
     ]
 )
 
-study_unique_id = pa.struct(
+study_id = pa.struct(
     [
         pa.field("accession_id", pa.string()),
         pa.field("doi", pa.string()),
@@ -169,7 +170,7 @@ analyzed_data = pa.struct(
         pa.field("github_url", pa.string()),  # release URL
         pa.field("doi", pa.string()),  # Zenodo / Figshare
         pa.field("rrid", pa.string()),
-        pa.field("dataset_id", pa.string()),
+        pa.field("data_asset_id", pa.string()),
     ]
 )
 
@@ -209,7 +210,7 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "license",
             license_,
-            description="Information about the dataset's license",
+            description="Information about the data asset's license",
             fmt="Creative Commons with the version and URL",
             query="CC version, URL",
         ),
@@ -291,16 +292,16 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Pixel/voxel size, Time interval",
         ),
         col(
-            "study_unique_id",
-            study_unique_id,
+            "study_id",
+            study_id,
             description="Unique ID for the study",
             fmt="Accession ID, DOI",
             query="Accession ID, DOI",
         ),
         col(
-            "dataset_unique_id",
+            "data_asset_id",
             pa.string(),
-            description="Unique ID for the dataset",
+            description="Unique ID for the data asset",
             fmt="Accession ID",
             query="Accession ID",
         ),
@@ -329,13 +330,13 @@ BIOPARQUET_SCHEMA = pa.schema(
             "analyzed_data",
             pa.list_(analyzed_data),
             description="Information about software, workflow, annotation data",
-            fmt="GitHub URL (release), DOI (Zenodo, Figshare), RRID, Dataset ID",
+            fmt="GitHub URL (release), DOI (Zenodo, Figshare), RRID, Data asset ID",
             query="Name, DOI",
         ),
     ],
     metadata={
         "source": "foundingGIDE_metadata_fields.md",
-        "grain": "one row per dataset/study",
+        "grain": "one row per data asset",
     },
 )
 
