@@ -4,10 +4,9 @@
 # ///
 """Parquet schema for the foundingGIDE bioimaging metadata fields.
 
-The schema is derived 1:1 from ``foundingGIDE_metadata_fields.xlsx``
-("GIDE Metadata Fields" sheet). Each row of that spreadsheet is a metadata
-*component*; here each component becomes one top-level column of a single wide
-table whose grain is **one row per dataset/study**.
+The schema is derived 1:1 from ``foundingGIDE_metadata_fields.md``. Each row of
+that table is a metadata *component*; here each component becomes one top-level
+column of a single wide table whose grain is **one row per dataset/study**.
 
 Design notes
 ------------
@@ -19,7 +18,7 @@ Design notes
 * Free text -> ``string``; release date -> timezone-aware ``timestamp`` to honour
   the "ISO 8601 incl. time/time zone" format requirement.
 * Field-level ``metadata`` carries the original Description / Format / Access
-  Query text from the spreadsheet so the Parquet file is self-documenting.
+  Query text from the metadata spec so the Parquet file is self-documenting.
 """
 
 from __future__ import annotations
@@ -40,7 +39,7 @@ def ontology_term(*, source: bool = True) -> pa.DataType:
 
 
 def col(name: str, dtype: pa.DataType, *, description: str, fmt: str, query: str) -> pa.Field:
-    """Build a field, attaching the spreadsheet's documentation as metadata."""
+    """Build a field, attaching the metadata spec's documentation as metadata."""
     return pa.field(
         name,
         dtype,
@@ -335,8 +334,7 @@ GIDE_SCHEMA = pa.schema(
         ),
     ],
     metadata={
-        "source": "foundingGIDE_metadata_fields.xlsx",
-        "sheet": "GIDE Metadata Fields",
+        "source": "foundingGIDE_metadata_fields.md",
         "grain": "one row per dataset/study",
     },
 )

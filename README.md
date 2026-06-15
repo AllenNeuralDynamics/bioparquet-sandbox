@@ -1,12 +1,12 @@
 # foundingGIDE metadata — Parquet schema
 
-A PyArrow Parquet schema derived from `foundingGIDE_metadata_fields.xlsx`
-(sheet *GIDE Metadata Fields*), the founding Global Image Data Exchange (GIDE)
-bioimaging metadata specification.
+A PyArrow Parquet schema derived from
+[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md), the
+founding Global Image Data Exchange (GIDE) bioimaging metadata specification.
 
 ## Model
 
-One row = one dataset/study. The spreadsheet *components* become 22 top-level
+One row = one dataset/study. The metadata *components* become 22 top-level
 columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
@@ -18,8 +18,8 @@ columns:
   channel `content` (FBbi `ontology_term`) with its `biological_entity`
   (Experimental Factor Ontology term + UniProt ID).
 - `release_date` is a timezone-aware `timestamp` (ISO 8601 with time/zone).
-- Each field carries the original spreadsheet Description / Format / Access
-  Query as Arrow field metadata, so the Parquet file is self-documenting.
+- Each field carries the original Description / Format / Access Query from the
+  metadata spec as Arrow field metadata, so the Parquet file is self-documenting.
 
 ## Usage
 
