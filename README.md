@@ -32,3 +32,22 @@ Import the schema directly:
 ```python
 from gide_schema import GIDE_SCHEMA
 ```
+
+## Example
+
+```bash
+uv run example_table.py
+```
+
+`example_table.py` populates every component with a realistic dataset row
+(a fictional human iPSC cardiomyocyte live-imaging study), writes it to
+`gide_example.parquet`, and reads it back to confirm the data validates
+against `GIDE_SCHEMA`. It also serves as a reference for how to construct
+rows — nested structs as plain dicts, repeatable components as lists:
+
+```python
+import pyarrow as pa
+from gide_schema import GIDE_SCHEMA
+
+table = pa.table(ROWS, schema=GIDE_SCHEMA)  # validates against the schema
+```
