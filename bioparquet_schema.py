@@ -348,13 +348,56 @@ BIOPARQUET_SCHEMA = pa.schema(
 )
 
 
+def _storage_type(t: pa.DataType) -> pa.DataType:
+    """Replace every extension type (e.g. ``arrow.json``) with its storage type.
+
+    ``pa.array`` cannot build extension types like ``arrow.json`` from Python
+    objects, so callers construct those fields using their storage type (a string
+    for JSON) and the table is cast to the real schema afterwards. Recurses
+    through structs and lists so extension fields at any depth are handled.
+    """
+    if isinstance(t, pa.BaseExtensionType):
+        return _storage_type(t.storage_type)
+    if pa.types.is_struct(t):
+        return pa.struct([f.with_type(_storage_type(f.type)) for f in t])
+    if pa.types.is_large_list(t):
+        return pa.large_list(t.value_field.with_type(_storage_type(t.value_type)))
+    if pa.types.is_list(t):
+        return pa.list_(t.value_field.with_type(_storage_type(t.value_type)))
+    return t
+
+
+def storage_schema() -> pa.Schema:
+    """``BIOPARQUET_SCHEMA`` with every extension type replaced by its storage type.
+
+    Use this to construct data (``pa.array`` can't build extension types from
+    Python objects), then ``cast`` the result to ``BIOPARQUET_SCHEMA``.
+    """
+    return pa.schema(
+        [f.with_type(_storage_type(f.type)) for f in BIOPARQUET_SCHEMA],
+        metadata=BIOPARQUET_SCHEMA.metadata,
+    )
+
+
+def build_table(rows) -> pa.Table:
+    """Build a table from a ``column -> values`` mapping, typed as ``BIOPARQUET_SCHEMA``.
+
+    JSON (``arrow.json``) fields are supplied as JSON strings; they are built
+    against the extension's string storage type and cast up to the real schema,
+    since ``pa.array`` can't construct extension types from Python objects.
+    """
+    return pa.table(rows, schema=storage_schema()).cast(BIOPARQUET_SCHEMA)
+
+
 def main() -> None:
     print(BIOPARQUET_SCHEMA.to_string(show_field_metadata=False))
     print(f"\n{len(BIOPARQUET_SCHEMA)} top-level components.")
 
-    # Write an empty, schema-only Parquet file as a reusable template.
+    # Write an empty, schema-only Parquet file as a reusable template. Build the
+    # empty table from the storage schema and cast up, since extension types
+    # (arrow.json) can't be materialised directly.
     out = "bioparquet_metadata.parquet"
-    empty = BIOPARQUET_SCHEMA.empty_table()
+    empty = storage_schema().empty_table().cast(BIOPARQUET_SCHEMA)
     pq.write_table(empty, out)
 
     # Round-trip to prove the schema is valid and persisted intact. Parquet adds

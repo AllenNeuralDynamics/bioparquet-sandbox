@@ -17,7 +17,7 @@ import json
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from bioparquet_schema import BIOPARQUET_SCHEMA
+from bioparquet_schema import BIOPARQUET_SCHEMA, build_table
 
 # One row, given as a column-name -> list-of-values mapping (one element per
 # row). Nested structs are plain dicts; lists are Python lists. Any component
@@ -156,31 +156,8 @@ ROWS = {
 }
 
 
-def _storage_type(t: pa.DataType) -> pa.DataType:
-    """Replace every extension type (e.g. ``arrow.json``) with its storage type.
-
-    ``pa.array`` cannot build extension types like ``arrow.json`` from Python
-    objects, so we construct those fields using their storage type (a string for
-    JSON) and cast the table to the real schema afterwards. Recurses through
-    structs and lists so JSON fields at any depth are handled.
-    """
-    if isinstance(t, pa.BaseExtensionType):
-        return _storage_type(t.storage_type)
-    if pa.types.is_struct(t):
-        return pa.struct([f.with_type(_storage_type(f.type)) for f in t])
-    if pa.types.is_large_list(t):
-        return pa.large_list(t.value_field.with_type(_storage_type(t.value_type)))
-    if pa.types.is_list(t):
-        return pa.list_(t.value_field.with_type(_storage_type(t.value_type)))
-    return t
-
-
 def main() -> None:
-    build_schema = pa.schema(
-        [f.with_type(_storage_type(f.type)) for f in BIOPARQUET_SCHEMA],
-        metadata=BIOPARQUET_SCHEMA.metadata,
-    )
-    table = pa.table(ROWS, schema=build_schema).cast(BIOPARQUET_SCHEMA)
+    table = build_table(ROWS)
     assert table.schema.equals(BIOPARQUET_SCHEMA, check_metadata=False)
 
     out = "bioparquet_example.parquet"

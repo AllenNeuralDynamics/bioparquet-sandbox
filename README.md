@@ -96,11 +96,13 @@ uv run example_table.py
 (a fictional human iPSC cardiomyocyte live-imaging study), writes it to
 `bioparquet_example.parquet`, and reads it back to confirm the data validates
 against `BIOPARQUET_SCHEMA`. It also serves as a reference for how to construct
-rows — nested structs as plain dicts, repeatable components as lists:
+rows — nested structs as plain dicts, repeatable components as lists, JSON
+fields as JSON strings:
 
 ```python
-import pyarrow as pa
-from bioparquet_schema import BIOPARQUET_SCHEMA
+from bioparquet_schema import build_table
 
-table = pa.table(ROWS, schema=BIOPARQUET_SCHEMA)  # validates against the schema
+# build_table types the data as BIOPARQUET_SCHEMA, handling arrow.json fields
+# (supply them as JSON strings).
+table = build_table(ROWS)
 ```
