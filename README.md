@@ -20,6 +20,10 @@ repeats across them). The metadata *components* become 22 top-level columns:
 - **Axes** are a single `axes` list of an `axis` struct, carrying each axis's
   identity/extent (`name`, `type`, `size`) together with its physical `spacing`
   and `unit`.
+- **Instrument** is a `struct<name, description, additional_metadata>`, where
+  `additional_metadata` is a JSON document (Arrow's canonical `arrow.json`
+  extension type) for free-form, instrument-specific fields (PIDInst, objective,
+  lasers, …). Requires pyarrow ≥ 19.
 - `release_date` is a timezone-aware `timestamp` (ISO 8601 with time/zone).
 - Each field carries the original Description / Format / Access Query from the
   metadata spec as Arrow field metadata, so the Parquet file is self-documenting.

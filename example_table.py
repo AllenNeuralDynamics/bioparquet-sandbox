@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pyarrow>=16"]
+# dependencies = ["pyarrow>=19"]
 # ///
 """Build an example bioparquet metadata table conforming to ``BIOPARQUET_SCHEMA``.
 
@@ -12,6 +12,7 @@ data validates against the schema.
 from __future__ import annotations
 
 import datetime as dt
+import json
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -101,7 +102,15 @@ ROWS = {
             }
         ]
     ],
-    "instrument": [{"name": "Zeiss LSM 980 (NBO-Q compliant)", "instrument_id": "21.T11998/instrument-lsm980"}],
+    "instrument": [
+        {
+            "name": "Zeiss LSM 980",
+            "description": "Inverted laser scanning confocal microscope (NBO-Q compliant)",
+            "additional_metadata": json.dumps(
+                {"pidinst": "21.T11998/instrument-lsm980", "objective": "63x/1.4 oil", "lasers_nm": [488, 561]}
+            ),
+        }
+    ],
     "axes": [
         [
             {"name": "t", "type": "time", "size": 120, "spacing": 30.0, "unit": "second"},
@@ -147,8 +156,31 @@ ROWS = {
 }
 
 
+def _storage_type(t: pa.DataType) -> pa.DataType:
+    """Replace every extension type (e.g. ``arrow.json``) with its storage type.
+
+    ``pa.array`` cannot build extension types like ``arrow.json`` from Python
+    objects, so we construct those fields using their storage type (a string for
+    JSON) and cast the table to the real schema afterwards. Recurses through
+    structs and lists so JSON fields at any depth are handled.
+    """
+    if isinstance(t, pa.BaseExtensionType):
+        return _storage_type(t.storage_type)
+    if pa.types.is_struct(t):
+        return pa.struct([f.with_type(_storage_type(f.type)) for f in t])
+    if pa.types.is_large_list(t):
+        return pa.large_list(t.value_field.with_type(_storage_type(t.value_type)))
+    if pa.types.is_list(t):
+        return pa.list_(t.value_field.with_type(_storage_type(t.value_type)))
+    return t
+
+
 def main() -> None:
-    table = pa.table(ROWS, schema=BIOPARQUET_SCHEMA)
+    build_schema = pa.schema(
+        [f.with_type(_storage_type(f.type)) for f in BIOPARQUET_SCHEMA],
+        metadata=BIOPARQUET_SCHEMA.metadata,
+    )
+    table = pa.table(ROWS, schema=build_schema).cast(BIOPARQUET_SCHEMA)
     assert table.schema.equals(BIOPARQUET_SCHEMA, check_metadata=False)
 
     out = "bioparquet_example.parquet"

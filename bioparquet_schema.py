@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["pyarrow>=16"]
+# dependencies = ["pyarrow>=19"]
 # ///
 """bioparquet: the foundingGIDE bioimaging metadata standard implemented in Parquet.
 
@@ -132,7 +132,9 @@ channel = pa.struct(
 instrument = pa.struct(
     [
         pa.field("name", pa.string()),  # 4DN-BINA-OME-QUAREP (NBO-Q) compliant
-        pa.field("instrument_id", pa.string()),  # PIDInst
+        pa.field("description", pa.string()),
+        # Free-form extra fields (e.g. PIDInst, NBO-Q details) as a JSON document.
+        pa.field("additional_metadata", pa.json_()),
     ]
 )
 
