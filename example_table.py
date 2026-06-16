@@ -122,13 +122,21 @@ ROWS = {
     "organ": [
         [{"ontology_source": "UBERON", "term_id": "UBERON:0000948", "term_label": "heart"}]
     ],
-    "analyzed_data": [
+    "processing": [
         [
             {
                 "name": "mito-segmentation",
                 "github_url": "https://github.com/example/mito-seg/releases/tag/v1.2.0",
-                "doi": "10.5281/zenodo.9999999",
                 "rrid": "SCR_999999",
+                "version": "v1.2.0",
+            }
+        ]
+    ],
+    "derived_data": [
+        [
+            {
+                "name": "mitochondria segmentation masks",
+                "doi": "10.5281/zenodo.9999999",
                 "data_asset_id": "S-BIAD1234-1",
             }
         ]

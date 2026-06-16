@@ -7,7 +7,7 @@ Exchange) bioimaging metadata standard. The schema is derived from
 ## Model
 
 One row = one data asset (a study is composed of many data assets, so `study_id`
-repeats across them). The metadata *components* become 21 top-level columns:
+repeats across them). The metadata *components* become 22 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
@@ -35,9 +35,10 @@ collision-free column names — the descriptions still carry the original wordin
 | Study Description | `description` | Describes the data asset (the row grain), not the study. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
-| Analyzed Data → Dataset ID | `analyzed_data.data_asset_id` | "Dataset" → "data asset". |
+| Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one entity (see below). |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
+| Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |
 
 The grain follows from this: one row per **data asset**, with `study_id`
 repeating across the data assets that belong to the same study.
@@ -55,6 +56,14 @@ components are both keyed per axis. We model an axis as a single `axis` struct
 combining its identity and extent (`name`, `type`, `size`) with its physical
 `spacing` and `unit`, exposed as `axes: list<axis>`. `spacing`/`unit` are null
 for axes that have no resolution (e.g. the channel axis).
+
+Conversely, the spec's *Analyzed Data* component is a grab-bag — it mixes the
+software/workflow that produced a result with the derived/annotation data
+products themselves, so any single row leaves most fields null and can't say
+what it describes. We split it by what is referenced: `processing`
+(`name`, `github_url`, `rrid`, `version`) for the code/workflow, and
+`derived_data` (`name`, `doi`, `data_asset_id`) for the output products. Each is
+a self-consistent entity.
 
 ## Usage
 

@@ -158,13 +158,23 @@ study_id = pa.struct(
     ]
 )
 
-analyzed_data = pa.struct(
+# The spec's grab-bag "Analyzed Data" component is split by what is referenced:
+# the processing software/workflow that produced a result vs. the derived data
+# products.
+processing = pa.struct(
     [
         pa.field("name", pa.string()),
         pa.field("github_url", pa.string()),  # release URL
+        pa.field("rrid", pa.string()),  # Research Resource Identifier (e.g. SCR_)
+        pa.field("version", pa.string()),
+    ]
+)
+
+derived_data = pa.struct(
+    [
+        pa.field("name", pa.string()),
         pa.field("doi", pa.string()),  # Zenodo / Figshare
-        pa.field("rrid", pa.string()),
-        pa.field("data_asset_id", pa.string()),
+        pa.field("data_asset_id", pa.string()),  # another data asset
     ]
 )
 
@@ -314,10 +324,17 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="UBERON ID, term",
         ),
         col(
-            "analyzed_data",
-            pa.list_(analyzed_data),
-            description="Information about software, workflow, annotation data",
-            fmt="GitHub URL (release), DOI (Zenodo, Figshare), RRID, Data asset ID",
+            "processing",
+            pa.list_(processing),
+            description="Information about the software/workflow used to analyze the data",
+            fmt="Name, GitHub URL (release), RRID, version",
+            query="Name, RRID",
+        ),
+        col(
+            "derived_data",
+            pa.list_(derived_data),
+            description="Information about derived/annotation data products",
+            fmt="Name, DOI (Zenodo, Figshare), Data asset ID",
             query="Name, DOI",
         ),
     ],
