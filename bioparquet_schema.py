@@ -159,8 +159,9 @@ study_id = pa.struct(
 )
 
 # The spec's grab-bag "Analyzed Data" component is split by what is referenced:
-# the processing software/workflow that produced a result vs. the derived data
-# products.
+# the software/workflow that produced THIS data asset (``processing``) vs. the
+# separate data assets derived FROM it (``derived_data``). Each derived asset
+# describes its own processing in its own row.
 processing = pa.struct(
     [
         pa.field("name", pa.string()),
@@ -326,14 +327,14 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "processing",
             pa.list_(processing),
-            description="Information about the software/workflow used to analyze the data",
+            description="Software/workflow that produced this data asset",
             fmt="Name, GitHub URL (release), RRID, version",
             query="Name, RRID",
         ),
         col(
             "derived_data",
             pa.list_(derived_data),
-            description="Information about derived/annotation data products",
+            description="Data assets derived from this one (each describes its own processing)",
             fmt="Name, DOI (Zenodo, Figshare), Data asset ID",
             query="Name, DOI",
         ),

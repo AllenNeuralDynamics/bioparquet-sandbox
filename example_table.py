@@ -122,22 +122,25 @@ ROWS = {
     "organ": [
         [{"ontology_source": "UBERON", "term_id": "UBERON:0000948", "term_label": "heart"}]
     ],
+    # What produced THIS data asset: the raw images were compressed on write.
     "processing": [
         [
             {
-                "name": "mito-segmentation",
-                "github_url": "https://github.com/example/mito-seg/releases/tag/v1.2.0",
-                "rrid": "SCR_999999",
-                "version": "v1.2.0",
+                "name": "Blosc2 zstd compression",
+                "github_url": "https://github.com/Blosc/c-blosc2/releases/tag/v2.13.0",
+                "rrid": None,
+                "version": "2.13.0",
             }
         ]
     ],
+    # A separate, downstream data asset derived from this one. Whatever produced
+    # it (e.g. a segmentation tool) is described in that asset's own processing.
     "derived_data": [
         [
             {
                 "name": "mitochondria segmentation masks",
                 "doi": "10.5281/zenodo.9999999",
-                "data_asset_id": "S-BIAD1234-1",
+                "data_asset_id": "S-BIAD1234-2",
             }
         ]
     ],
