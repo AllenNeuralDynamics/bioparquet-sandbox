@@ -65,7 +65,7 @@ Conversely, the spec's *Analyzed Data* component is a grab-bag — it mixes the
 software/workflow that produced a result with the derived/annotation data
 products themselves, so any single row leaves most fields null and can't say
 what it describes. We split it by *direction* relative to the current row:
-`processing` (`name`, `github_url`, `rrid`, `version`) records what produced
+`processing` (`name`, `url`, `rrid`, `version`) records what produced
 **this** data asset (e.g. the compression applied on write), while
 `derived_data` (`name`, `doi`, `data_asset_id`) points to separate data assets
 derived **from** this one. A derived asset describes its own `processing` in its

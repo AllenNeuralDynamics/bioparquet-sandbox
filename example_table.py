@@ -136,7 +136,7 @@ ROWS = {
         [
             {
                 "name": "Blosc2 zstd compression",
-                "github_url": "https://github.com/Blosc/c-blosc2/releases/tag/v2.13.0",
+                "url": "https://github.com/Blosc/c-blosc2/releases/tag/v2.13.0",
                 "rrid": None,
                 "version": "2.13.0",
             }

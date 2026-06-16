@@ -167,7 +167,7 @@ study_id = pa.struct(
 processing = pa.struct(
     [
         pa.field("name", pa.string()),
-        pa.field("github_url", pa.string()),  # release URL
+        pa.field("url", pa.string()),  # e.g. source repo or release URL
         pa.field("rrid", pa.string()),  # Research Resource Identifier (e.g. SCR_)
         pa.field("version", pa.string()),
     ]
@@ -330,7 +330,7 @@ BIOPARQUET_SCHEMA = pa.schema(
             "processing",
             pa.list_(processing),
             description="Software/workflow that produced this data asset",
-            fmt="Name, GitHub URL (release), RRID, version",
+            fmt="Name, URL (e.g. source repo or release), RRID, version",
             query="Name, RRID",
         ),
         col(
