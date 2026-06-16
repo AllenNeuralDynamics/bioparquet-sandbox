@@ -94,8 +94,8 @@ ROWS = {
             {
                 "content": {"term_id": "FBbi:00000379", "term_label": "fluorescence emission"},
                 "biological_entity": {
-                    "efo_term_id": "EFO:0004542",
-                    "efo_term_label": "mitochondrion",
+                    "term_id": "EFO:0004542",
+                    "term_label": "mitochondrion",
                     "uniprot_id": "Q9P0U4",
                 },
             }

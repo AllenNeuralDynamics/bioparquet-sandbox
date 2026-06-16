@@ -115,12 +115,9 @@ antibody = pa.struct(
     ]
 )
 
+# An Experimental Factor Ontology term plus its UniProt cross-reference.
 channel_biological_entity = pa.struct(
-    [
-        pa.field("efo_term_id", pa.string()),  # Experimental Factor Ontology
-        pa.field("efo_term_label", pa.string()),
-        pa.field("uniprot_id", pa.string()),
-    ]
+    list(ontology_term(source=False)) + [pa.field("uniprot_id", pa.string())]
 )
 
 # A single imaging channel: what it captures (FBbi content) plus the

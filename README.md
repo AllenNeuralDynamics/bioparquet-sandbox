@@ -16,7 +16,7 @@ repeats across them). The metadata *components* become 21 top-level columns:
   are `list<…>`.
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
   channel `content` (FBbi `ontology_term`) with its `biological_entity`
-  (Experimental Factor Ontology term + UniProt ID).
+  (an EFO `ontology_term` plus a `uniprot_id` cross-reference).
 - **Axes** are a single `axes` list of an `axis` struct, carrying each axis's
   identity/extent (`name`, `type`, `size`) together with its physical `spacing`
   and `unit`.
@@ -45,8 +45,8 @@ repeating across the data assets that belong to the same study.
 The spec lists two separate channel components — *Channel – Content* and
 *Channel – Biological Entity* — but they describe the same thing: an imaging
 channel. We model a channel as a single `channel` struct that pairs `content`
-(FBbi `ontology_term`) with `biological_entity` (Experimental Factor Ontology
-term + UniProt ID), and expose the repeatable column as `channels:
+(FBbi `ontology_term`) with `biological_entity` (an EFO `ontology_term` plus a
+`uniprot_id` cross-reference), and expose the repeatable column as `channels:
 list<channel>`. This keeps a channel's content and biological entity together as
 one entity instead of two parallel, position-coupled lists.
 
