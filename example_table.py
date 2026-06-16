@@ -102,21 +102,13 @@ ROWS = {
         ]
     ],
     "instrument": [{"name": "Zeiss LSM 980 (NBO-Q compliant)", "instrument_id": "21.T11998/instrument-lsm980"}],
-    "dimensions": [
+    "axes": [
         [
-            {"name": "t", "type": "time", "size": 120},
-            {"name": "c", "type": "channel", "size": 2},
-            {"name": "z", "type": "space", "size": 40},
-            {"name": "y", "type": "space", "size": 1024},
-            {"name": "x", "type": "space", "size": 1024},
-        ]
-    ],
-    "resolution": [
-        [
-            {"axis": "x", "size": 0.108, "unit": "micrometer"},
-            {"axis": "y", "size": 0.108, "unit": "micrometer"},
-            {"axis": "z", "size": 0.29, "unit": "micrometer"},
-            {"axis": "t", "size": 30.0, "unit": "second"},
+            {"name": "t", "type": "time", "size": 120, "spacing": 30.0, "unit": "second"},
+            {"name": "c", "type": "channel", "size": 2, "spacing": None, "unit": None},
+            {"name": "z", "type": "space", "size": 40, "spacing": 0.29, "unit": "micrometer"},
+            {"name": "y", "type": "space", "size": 1024, "spacing": 0.108, "unit": "micrometer"},
+            {"name": "x", "type": "space", "size": 1024, "spacing": 0.108, "unit": "micrometer"},
         ]
     ],
     "study_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],

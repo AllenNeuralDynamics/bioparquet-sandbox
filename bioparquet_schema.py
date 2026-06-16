@@ -139,20 +139,17 @@ instrument = pa.struct(
     ]
 )
 
-# OME-Zarr axes (T, C, Z, Y, X): ordered list of axis descriptors.
+# OME-Zarr axis descriptor (T, C, Z, Y, X): one entry per axis combining its
+# identity and extent (the spec's Dimension component) with its physical pixel/
+# voxel spacing or time interval (the spec's Pixel/Voxel Size / Time resolution
+# component). ``spacing``/``unit`` are null for axes without a resolution
+# (e.g. the channel axis).
 axis = pa.struct(
     [
         pa.field("name", pa.string()),  # "t" | "c" | "z" | "y" | "x"
         pa.field("type", pa.string()),  # "time" | "channel" | "space"
         pa.field("size", pa.int64()),  # number of elements along the axis
-    ]
-)
-
-# Physical size / time resolution, value + unit per spatial/temporal axis.
-resolution = pa.struct(
-    [
-        pa.field("axis", pa.string()),  # "x" | "y" | "z" | "t"
-        pa.field("size", pa.float64()),
+        pa.field("spacing", pa.float64()),  # pixel/voxel size or time interval
         pa.field("unit", pa.string()),  # e.g. "micrometer", "second"
     ]
 )
@@ -278,18 +275,11 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Instrument name, ID",
         ),
         col(
-            "dimensions",
+            "axes",
             pa.list_(axis),
-            description="Information about data dimensions",
-            fmt="Compliant with OME-Zarr axes info. (T, C, Z, Y, X)",
-            query="Dimension specification",
-        ),
-        col(
-            "resolution",
-            pa.list_(resolution),
-            description="Size of the pixels or voxels, Time interval",
-            fmt="Pixel/Voxel size and time interval stored with units",
-            query="Pixel/voxel size, Time interval",
+            description="Information about data dimensions, including pixel/voxel size and time interval",
+            fmt="Compliant with OME-Zarr axes info. (T, C, Z, Y, X); pixel/voxel size and time interval stored with units",
+            query="Dimension specification, Pixel/voxel size, Time interval",
         ),
         col(
             "study_id",

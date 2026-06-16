@@ -7,7 +7,7 @@ Exchange) bioimaging metadata standard. The schema is derived from
 ## Model
 
 One row = one data asset (a study is composed of many data assets, so `study_id`
-repeats across them). The metadata *components* become 22 top-level columns:
+repeats across them). The metadata *components* become 21 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
@@ -17,6 +17,9 @@ repeats across them). The metadata *components* become 22 top-level columns:
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
   channel `content` (FBbi `ontology_term`) with its `biological_entity`
   (Experimental Factor Ontology term + UniProt ID).
+- **Axes** are a single `axes` list of an `axis` struct, carrying each axis's
+  identity/extent (`name`, `type`, `size`) together with its physical `spacing`
+  and `unit`.
 - `release_date` is a timezone-aware `timestamp` (ISO 8601 with time/zone).
 - Each field carries the original Description / Format / Access Query from the
   metadata spec as Arrow field metadata, so the Parquet file is self-documenting.
@@ -33,6 +36,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | Analyzed Data → Dataset ID | `analyzed_data.data_asset_id` | "Dataset" → "data asset". |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one entity (see below). |
+| Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
 
 The grain follows from this: one row per **data asset**, with `study_id`
 repeating across the data assets that belong to the same study.
@@ -44,6 +48,12 @@ channel. We model a channel as a single `channel` struct that pairs `content`
 term + UniProt ID), and expose the repeatable column as `channels:
 list<channel>`. This keeps a channel's content and biological entity together as
 one entity instead of two parallel, position-coupled lists.
+
+Similarly, the spec's *Dimension* and *Pixel/Voxel Size/Time resolution*
+components are both keyed per axis. We model an axis as a single `axis` struct
+combining its identity and extent (`name`, `type`, `size`) with its physical
+`spacing` and `unit`, exposed as `axes: list<axis>`. `spacing`/`unit` are null
+for axes that have no resolution (e.g. the channel axis).
 
 ## Usage
 
