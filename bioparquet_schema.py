@@ -114,17 +114,21 @@ antibody = pa.struct(
     ]
 )
 
-# An Experimental Factor Ontology term plus its UniProt cross-reference.
-channel_biological_entity = pa.struct(
-    list(ontology_term(source=False)) + [pa.field("uniprot_id", pa.string())]
-)
-
-# A single imaging channel: what it captures (FBbi content) plus the
-# biological entity it targets. Data assets can have many channels.
+# A single channel: the probe used to visualize and the target it detects, each
+# a controlled-vocabulary term (probe from ChEBI/FBbi, target from UniProt/EFO/…
+# — hence the ontology source is kept). Data assets can have many channels.
 channel = pa.struct(
     [
-        pa.field("content", ontology_term(source=False)),  # FBbi
-        pa.field("biological_entity", channel_biological_entity),
+        pa.field(
+            "probe",
+            ontology_term(),
+            metadata={"description": "The label/reagent applied or expressed"},
+        ),
+        pa.field(
+            "target",
+            ontology_term(),
+            metadata={"description": "The biological molecule or structure detected"},
+        ),
     ]
 )
 
@@ -272,9 +276,9 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "channels",
             pa.list_(channel),
-            description="Information about the imaging channels (content and biological entity)",
-            fmt="FBbi term and ID (content); Experimental Factor Ontology term and UniProt ID (biological entity)",
-            query="Channel content ID/term, Biological entity ID/term",
+            description="Information about the channels (probe and target)",
+            fmt="Ontology term and ID for the probe and the target",
+            query="Probe ID/term, Target ID/term",
         ),
         col(
             "instrument",

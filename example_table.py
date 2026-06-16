@@ -91,12 +91,8 @@ ROWS = {
     "channels": [
         [
             {
-                "content": {"term_id": "FBbi:00000379", "term_label": "fluorescence emission"},
-                "biological_entity": {
-                    "term_id": "EFO:0004542",
-                    "term_label": "mitochondrion",
-                    "uniprot_id": "Q9P0U4",
-                },
+                "probe": {"ontology_source": "ChEBI", "term_id": "CHEBI:87173", "term_label": "Alexa Fluor 488"},
+                "target": {"ontology_source": "UniProt", "term_id": "Q15388", "term_label": "TOMM20"},
             }
         ]
     ],

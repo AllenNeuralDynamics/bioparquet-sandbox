@@ -15,8 +15,8 @@ repeats across them). The metadata *components* become 22 top-level columns:
 - **Repeatable** components (authors, organisms, genes, methods, …)
   are `list<…>`.
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
-  channel `content` (FBbi `ontology_term`) with its `biological_entity`
-  (an EFO `ontology_term` plus a `uniprot_id` cross-reference).
+  `probe` (the label/reagent applied or expressed) with the `target` (the
+  biological molecule or structure detected) — each an `ontology_term`.
 - **Axes** are a single `axes` list of an `axis` struct, carrying each axis's
   identity/extent (`name`, `type`, `size`) together with its physical `spacing`
   and `unit`.
@@ -41,7 +41,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
-| Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one entity (see below). |
+| Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
 | Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |
 
@@ -49,12 +49,12 @@ The grain follows from this: one row per **data asset**, with `study_id`
 repeating across the data assets that belong to the same study.
 
 The spec lists two separate channel components — *Channel – Content* and
-*Channel – Biological Entity* — but they describe the same thing: an imaging
-channel. We model a channel as a single `channel` struct that pairs `content`
-(FBbi `ontology_term`) with `biological_entity` (an EFO `ontology_term` plus a
-`uniprot_id` cross-reference), and expose the repeatable column as `channels:
-list<channel>`. This keeps a channel's content and biological entity together as
-one entity instead of two parallel, position-coupled lists.
+*Channel – Biological Entity* — but they describe the same thing: a channel. We
+model a channel as a single `channel` struct with two `ontology_term` fields —
+`probe` (the label/reagent applied or expressed) and `target` (the biological
+molecule or structure detected) — exposed as `channels: list<channel>`. This
+keeps a channel's probe and target together as one entity instead of two
+parallel, position-coupled lists.
 
 Similarly, the spec's *Dimension* and *Pixel/Voxel Size/Time resolution*
 components are both keyed per axis. We model an axis as a single `axis` struct
