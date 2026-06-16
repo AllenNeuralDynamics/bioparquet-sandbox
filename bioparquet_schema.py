@@ -177,9 +177,9 @@ analyzed_data = pa.struct(
 BIOPARQUET_SCHEMA = pa.schema(
     [
         col(
-            "study_description",
+            "description",
             pa.string(),
-            description="Description of the study",
+            description="Description of the data asset",
             fmt="Text",
             query="Free text",
         ),
@@ -345,7 +345,7 @@ def main() -> None:
     # strictly and confirm the field-level documentation survived separately.
     back = pq.read_schema(out)
     assert back.equals(BIOPARQUET_SCHEMA, check_metadata=False), "schema round-trip mismatch"
-    assert back.field("study_description").metadata[b"description"] == b"Description of the study"
+    assert back.field("description").metadata[b"description"] == b"Description of the data asset"
     print(f"Wrote schema-only template -> {out} (round-trip OK, field docs preserved)")
 
 

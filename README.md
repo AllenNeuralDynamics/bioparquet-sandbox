@@ -32,6 +32,7 @@ collision-free column names — the descriptions still carry the original wordin
 
 | Spec component | Schema column | Note |
 | --- | --- | --- |
+| Study Description | `description` | Describes the data asset (the row grain), not the study. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | Analyzed Data → Dataset ID | `analyzed_data.data_asset_id` | "Dataset" → "data asset". |

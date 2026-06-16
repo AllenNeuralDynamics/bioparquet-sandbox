@@ -22,7 +22,7 @@ from bioparquet_schema import BIOPARQUET_SCHEMA
 # row). Nested structs are plain dicts; lists are Python lists. Any component
 # may be omitted/None — the schema is fully nullable.
 ROWS = {
-    "study_description": [
+    "description": [
         "Live confocal imaging of mitochondrial dynamics in human iPSC-derived "
         "cardiomyocytes under metabolic stress."
     ],
