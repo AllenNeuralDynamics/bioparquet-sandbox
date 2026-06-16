@@ -12,7 +12,7 @@ repeats across them). The metadata *components* become 22 top-level columns:
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
   (FBbi, NCBI Taxonomy, ChEBI, MONDO, UBERON, …) is preserved.
-- **Repeatable** components (authors, organisms, genes, imaging methods, …)
+- **Repeatable** components (authors, organisms, genes, methods, …)
   are `list<…>`.
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
   channel `content` (FBbi `ontology_term`) with its `biological_entity`
@@ -37,6 +37,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Spec component | Schema column | Note |
 | --- | --- | --- |
 | Study Description | `description` | Describes the data asset (the row grain), not the study. |
+| Imaging Method | `methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |

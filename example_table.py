@@ -60,7 +60,7 @@ ROWS = {
     ],
     "license": [{"name": "CC BY 4.0", "url": "https://creativecommons.org/licenses/by/4.0/"}],
     "release_date": [dt.datetime(2025, 11, 3, 9, 0, tzinfo=dt.timezone.utc)],
-    "imaging_methods": [
+    "methods": [
         [{"ontology_source": "FBbi", "term_id": "FBbi:00000251", "term_label": "confocal microscopy"}]
     ],
     "cell_lines": [
