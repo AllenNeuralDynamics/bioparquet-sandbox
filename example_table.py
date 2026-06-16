@@ -122,7 +122,7 @@ ROWS = {
     "phenotype": [
         [{"ontology_source": "CMPO", "term_id": "CMPO:0000425", "term_label": "fragmented mitochondria phenotype"}]
     ],
-    "organ": [
+    "anatomical_location": [
         [{"ontology_source": "UBERON", "term_id": "UBERON:0000948", "term_label": "heart"}]
     ],
     # What produced THIS data asset: the raw images were compressed on write.

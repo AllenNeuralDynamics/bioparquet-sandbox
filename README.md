@@ -38,6 +38,7 @@ collision-free column names — the descriptions still carry the original wordin
 | --- | --- | --- |
 | Study Description | `description` | Describes the data asset (the row grain), not the study. |
 | Imaging Method | `methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
+| Organ | `anatomical_location` | Generalized beyond organs; still UBERON/RadLex terms. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |

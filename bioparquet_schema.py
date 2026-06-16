@@ -323,7 +323,7 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Phenotype ID, term",
         ),
         col(
-            "organ",
+            "anatomical_location",
             pa.list_(ontology_term()),  # UBERON / RadLex
             description="Information about anatomical entities",
             fmt="UBERON, RadLex Ontology",
