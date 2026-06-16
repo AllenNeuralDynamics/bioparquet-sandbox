@@ -21,6 +21,21 @@ repeats across them). The metadata *components* become 22 top-level columns:
 - Each field carries the original Description / Format / Access Query from the
   metadata spec as Arrow field metadata, so the Parquet file is self-documenting.
 
+## Deviations from the spec
+
+[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md) mirrors the
+standard verbatim. The schema deliberately renames a few components for clearer,
+collision-free column names — the descriptions still carry the original wording:
+
+| Spec component | Schema column | Note |
+| --- | --- | --- |
+| Study Unique ID | `study_id` | Dropped "unique" from the name. |
+| Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
+| Analyzed Data → Dataset ID | `analyzed_data.data_asset_id` | "Dataset" → "data asset". |
+
+The grain follows from this: one row per **data asset**, with `study_id`
+repeating across the data assets that belong to the same study.
+
 ## Usage
 
 ```bash
