@@ -57,8 +57,7 @@ def col(name: str, dtype: pa.DataType, *, description: str, fmt: str, query: str
 
 author = pa.struct(
     [
-        pa.field("first_name", pa.string()),
-        pa.field("last_name", pa.string()),
+        pa.field("name", pa.string()),
         pa.field("orcid", pa.string()),
         pa.field("credit_roles", pa.list_(pa.string())),  # CRediT contributor roles
         pa.field("organization_name", pa.string()),
@@ -197,7 +196,7 @@ BIOPARQUET_SCHEMA = pa.schema(
             "authors",
             pa.list_(author),
             description="Information about the authors",
-            fmt="First name and Last name; Affiliation, ORCID",
+            fmt="Name; Affiliation, ORCID",
             query="Author name, ORCID, CRediT, Organization name, ROR",
         ),
         col(

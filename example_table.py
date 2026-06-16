@@ -30,16 +30,14 @@ ROWS = {
     "authors": [
         [
             {
-                "first_name": "Ada",
-                "last_name": "Lovelace",
+                "name": "Ada Lovelace",
                 "orcid": "0000-0002-1825-0097",
                 "credit_roles": ["Conceptualization", "Writing – original draft"],
                 "organization_name": "Allen Institute for Cell Science",
                 "ror": "03cpe7c52",
             },
             {
-                "first_name": "Grace",
-                "last_name": "Hopper",
+                "name": "Grace Hopper",
                 "orcid": "0000-0001-2345-6789",
                 "credit_roles": ["Data curation", "Formal analysis"],
                 "organization_name": "Allen Institute for Cell Science",
