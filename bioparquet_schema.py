@@ -14,8 +14,8 @@ Design notes
 * Most components reference a controlled vocabulary as a (term, id) pair, often
   with a named source ontology. These are modelled with the reusable
   ``ontology_term`` struct so the *which ontology* provenance is never lost.
-* Components that can legitimately repeat (authors, genes, organisms, methods,
-  ...) are modelled as ``list<...>`` rather than scalars.
+* Components that can legitimately repeat (authors, genes, organisms,
+  acquisition methods, ...) are modelled as ``list<...>`` rather than scalars.
 * Free text -> ``string``; release date -> timezone-aware ``timestamp`` to honour
   the "ISO 8601 incl. time/time zone" format requirement.
 * Field-level ``metadata`` carries the original Description / Format / Access
@@ -232,9 +232,9 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Release date, range search",
         ),
         col(
-            "methods",
+            "acquisition_methods",
             pa.list_(ontology_term()),  # FBbi / EDAM Bioimaging
-            description="The method used to obtain the data",
+            description="The method used to acquire the data",
             fmt="FBbi, EDAM Bioimaging Ontology term and ID",
             query="FBbi or EDAM Bioimaging Ontology ID, term",
         ),
