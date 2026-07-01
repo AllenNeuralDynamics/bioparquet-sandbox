@@ -91,11 +91,6 @@ def render_markdown(schema: pa.Schema = BIOPARQUET_SCHEMA) -> str:
     lines = [
         "# bioparquet schema",
         "",
-        "_Generated from `BIOPARQUET_SCHEMA` in "
-        "`src/bioparquet_sandbox/schema.py` by "
-        "`bioparquet_sandbox.visualize`. Do not edit by hand — run "
-        "`python -m bioparquet_sandbox.visualize`._",
-        "",
         f"One row = one data asset. {len(schema)} top-level components "
         "(**bold**); indented rows are nested subfields.",
         "",

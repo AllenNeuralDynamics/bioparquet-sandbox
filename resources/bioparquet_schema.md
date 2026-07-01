@@ -1,7 +1,5 @@
 # bioparquet schema
 
-_Generated from `BIOPARQUET_SCHEMA` in `src/bioparquet_sandbox/schema.py` by `bioparquet_sandbox.visualize`. Do not edit by hand — run `python -m bioparquet_sandbox.visualize`._
-
 One row = one data asset. 22 top-level components (**bold**); indented rows are nested subfields.
 
 | Field | Type | Description | Format | Access query |
