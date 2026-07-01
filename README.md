@@ -40,7 +40,9 @@ collision-free column names — the descriptions still carry the original wordin
 | Imaging Method | `acquisition_methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
 | Organ | `anatomical_location` | Generalized beyond organs; still UBERON/RadLex terms. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
+| Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
+| _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `study_id`/`data_asset_id` convention (no "unique" in the name). |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
