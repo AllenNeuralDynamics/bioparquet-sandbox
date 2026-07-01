@@ -9,7 +9,7 @@
 
 A PyArrow Parquet implementation of the **foundingGIDE** (Global Image Data
 Exchange) bioimaging metadata standard. The schema is derived from
-[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md).
+[`foundingGIDE_metadata_fields.md`](resources/foundingGIDE_metadata_fields.md).
 
 ## Installation
 To use the software, in the root directory, run
@@ -54,7 +54,7 @@ repeats across them). The metadata *components* become 22 top-level columns:
 
 ## Deviations from the spec
 
-[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md) mirrors the
+[`foundingGIDE_metadata_fields.md`](resources/foundingGIDE_metadata_fields.md) mirrors the
 standard verbatim. The schema deliberately renames a few components for clearer,
 collision-free column names — the descriptions still carry the original wording:
 
@@ -115,8 +115,8 @@ from bioparquet_sandbox.schema import BIOPARQUET_SCHEMA
 ```
 
 Build the example table (a fictional human iPSC cardiomyocyte live-imaging
-study), write it to `bioparquet_example.parquet`, and read it back to confirm it
-validates against `BIOPARQUET_SCHEMA`:
+study), write it to `resources/bioparquet_example.parquet`, and read it back
+to confirm it validates against `BIOPARQUET_SCHEMA`:
 
 ```bash
 uv run python -m bioparquet_sandbox.example

@@ -1,6 +1,7 @@
 """bioparquet: the foundingGIDE bioimaging metadata standard in Parquet.
 
-The schema is derived 1:1 from ``foundingGIDE_metadata_fields.md``. Each row of
+The schema is derived 1:1 from ``resources/foundingGIDE_metadata_fields.md``.
+Each row of
 that table is a metadata *component*; here each component becomes one top-level
 column of a single wide table whose grain is **one row per data asset**
 (a study is composed of many data assets; ``study_id`` repeats across them).
@@ -369,7 +370,7 @@ BIOPARQUET_SCHEMA = pa.schema(
         ),
     ],
     metadata={
-        "source": "foundingGIDE_metadata_fields.md",
+        "source": "resources/foundingGIDE_metadata_fields.md",
         "grain": "one row per data asset",
     },
 )

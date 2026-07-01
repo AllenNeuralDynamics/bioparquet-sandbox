@@ -34,7 +34,9 @@ class ExampleTest(unittest.TestCase):
             try:
                 os.chdir(tmp)
                 example.main()
-                back = pq.read_table("bioparquet_example.parquet")
+                back = pq.read_table(
+                    os.path.join("resources", "bioparquet_example.parquet")
+                )
             finally:
                 os.chdir(cwd)
         self.assertEqual(back.num_rows, 1)

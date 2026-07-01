@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import os
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -272,7 +273,8 @@ def main() -> None:
     table = build_example_table()
     assert table.schema.equals(BIOPARQUET_SCHEMA, check_metadata=False)
 
-    out = "bioparquet_example.parquet"
+    out = os.path.join("resources", "bioparquet_example.parquet")
+    os.makedirs("resources", exist_ok=True)
     pq.write_table(table, out)
 
     back = pq.read_table(out)
