@@ -67,7 +67,17 @@ ROWS = {
         [{"term_id": "CLO:0037317", "term_label": "WTC-11 human induced pluripotent stem cell line"}]
     ],
     "organisms": [
-        [{"ncbi_taxon_id": "NCBITaxon:9606", "term_label": "Homo sapiens", "geographic_location": "USA: Washington"}]
+        [
+            {
+                "organism_id": "SAMN00000001",
+                "ncbi_taxon_id": "NCBITaxon:9606",
+                "term_label": "Homo sapiens",
+                "geographic_location": "USA: Washington",
+                "additional_metadata": json.dumps(
+                    {"strain": "WTC-11", "sex": "male", "developmental_stage": "adult"}
+                ),
+            }
+        ]
     ],
     "genes": [
         [
