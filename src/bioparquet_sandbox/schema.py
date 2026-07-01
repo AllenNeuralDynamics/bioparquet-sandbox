@@ -1,10 +1,7 @@
-# /// script
-# requires-python = ">=3.10"
-# dependencies = ["pyarrow>=19"]
-# ///
-"""bioparquet: the foundingGIDE bioimaging metadata standard implemented in Parquet.
+"""bioparquet: the foundingGIDE bioimaging metadata standard in Parquet.
 
-The schema is derived 1:1 from ``foundingGIDE_metadata_fields.md``. Each row of
+The schema is derived 1:1 from ``resources/foundingGIDE_metadata_fields.md``.
+Each row of
 that table is a metadata *component*; here each component becomes one top-level
 column of a single wide table whose grain is **one row per data asset**
 (a study is composed of many data assets; ``study_id`` repeats across them).
@@ -16,8 +13,8 @@ Design notes
   ``ontology_term`` struct so the *which ontology* provenance is never lost.
 * Components that can legitimately repeat (authors, genes, organisms,
   acquisition methods, ...) are modelled as ``list<...>`` rather than scalars.
-* Free text -> ``string``; release date -> timezone-aware ``timestamp`` to honour
-  the "ISO 8601 incl. time/time zone" format requirement.
+* Free text -> ``string``; release date -> timezone-aware ``timestamp`` to
+  honour the "ISO 8601 incl. time/time zone" format requirement.
 * Field-level ``metadata`` carries the original Description / Format / Access
   Query text from the metadata spec so the Parquet file is self-documenting.
 """
@@ -29,7 +26,7 @@ import pyarrow.parquet as pq
 
 
 def ontology_term(*, source: bool = True) -> pa.DataType:
-    """A controlled-vocabulary reference: (optional source ontology, id, label)."""
+    """A controlled-vocabulary reference (optional source, id, label)."""
     fields = []
     if source:
         # e.g. "FBbi", "NCBI Taxonomy", "ChEBI", "MONDO" ...
@@ -39,8 +36,10 @@ def ontology_term(*, source: bool = True) -> pa.DataType:
     return pa.struct(fields)
 
 
-def col(name: str, dtype: pa.DataType, *, description: str, fmt: str, query: str) -> pa.Field:
-    """Build a field, attaching the metadata spec's documentation as metadata."""
+def col(
+    name: str, dtype: pa.DataType, *, description: str, fmt: str, query: str
+) -> pa.Field:
+    """Build a field with the spec's documentation attached as metadata."""
     return pa.field(
         name,
         dtype,
@@ -59,7 +58,9 @@ author = pa.struct(
     [
         pa.field("name", pa.string()),
         pa.field("orcid", pa.string()),
-        pa.field("credit_roles", pa.list_(pa.string())),  # CRediT contributor roles
+        pa.field(
+            "credit_roles", pa.list_(pa.string())
+        ),  # CRediT contributor roles
         pa.field("organization_name", pa.string()),
         pa.field("ror", pa.string()),  # Research Organization Registry ID
     ]
@@ -84,7 +85,9 @@ publication = pa.struct(
 
 license_ = pa.struct(
     [
-        pa.field("name", pa.string()),  # Creative Commons + version, e.g. "CC BY 4.0"
+        pa.field(
+            "name", pa.string()
+        ),  # Creative Commons + version, e.g. "CC BY 4.0"
         pa.field("url", pa.string()),
     ]
 )
@@ -99,9 +102,13 @@ gene = pa.struct(
 
 organism = pa.struct(
     [
+        pa.field("organism_id", pa.string()),  # Organism Unique ID
         pa.field("ncbi_taxon_id", pa.string()),
         pa.field("term_label", pa.string()),
         pa.field("geographic_location", pa.string()),  # BioSample geo location
+        # Free-form extra fields (e.g. strain, sex, developmental stage,
+        # BioSample attributes) as a JSON document.
+        pa.field("additional_metadata", pa.json_()),
     ]
 )
 
@@ -114,9 +121,10 @@ antibody = pa.struct(
     ]
 )
 
-# A single channel: the probe used to visualize and the target it detects, each
-# a controlled-vocabulary term (probe from ChEBI/FBbi, target from UniProt/EFO/…
-# — hence the ontology source is kept). Data assets can have many channels.
+# A single channel: the probe used to visualize and the target it detects,
+# each a controlled-vocabulary term (probe from ChEBI/FBbi, target from
+# UniProt/EFO/... -- hence the ontology source is kept). Data assets can have
+# many channels.
 channel = pa.struct(
     [
         pa.field(
@@ -127,7 +135,9 @@ channel = pa.struct(
         pa.field(
             "target",
             ontology_term(),
-            metadata={"description": "The biological molecule or structure detected"},
+            metadata={
+                "description": "The biological molecule or structure detected"
+            },
         ),
     ]
 )
@@ -136,7 +146,8 @@ instrument = pa.struct(
     [
         pa.field("name", pa.string()),  # 4DN-BINA-OME-QUAREP (NBO-Q) compliant
         pa.field("description", pa.string()),
-        # Free-form extra fields (e.g. PIDInst, NBO-Q details) as a JSON document.
+        # Free-form extra fields (e.g. PIDInst, NBO-Q details) as a JSON
+        # document.
         pa.field("additional_metadata", pa.json_()),
     ]
 )
@@ -171,7 +182,9 @@ processing = pa.struct(
     [
         pa.field("name", pa.string()),
         pa.field("url", pa.string()),  # e.g. source repo or release URL
-        pa.field("rrid", pa.string()),  # Research Resource Identifier (e.g. SCR_)
+        pa.field(
+            "rrid", pa.string()
+        ),  # Research Resource Identifier (e.g. SCR_)
         pa.field("version", pa.string()),
     ]
 )
@@ -284,14 +297,23 @@ BIOPARQUET_SCHEMA = pa.schema(
             "instrument",
             instrument,
             description="Information about the instrument used",
-            fmt="Compliant with 4DN-BINA-OME-QUAREP (NBO-Q) standards, PIDInst",
+            fmt=(
+                "Compliant with 4DN-BINA-OME-QUAREP (NBO-Q) standards, "
+                "PIDInst"
+            ),
             query="Instrument name, ID",
         ),
         col(
             "axes",
             pa.list_(axis),
-            description="Information about data dimensions, including pixel/voxel size and time interval",
-            fmt="Compliant with OME-Zarr axes info. (T, C, Z, Y, X); pixel/voxel size and time interval stored with units",
+            description=(
+                "Information about data dimensions, including pixel/voxel "
+                "size and time interval"
+            ),
+            fmt=(
+                "Compliant with OME-Zarr axes info. (T, C, Z, Y, X); "
+                "pixel/voxel size and time interval stored with units"
+            ),
             query="Dimension specification, Pixel/voxel size, Time interval",
         ),
         col(
@@ -339,39 +361,45 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "derived_data",
             pa.list_(derived_data),
-            description="Data assets derived from this one (each describes its own processing)",
+            description=(
+                "Data assets derived from this one (each describes its "
+                "own processing)"
+            ),
             fmt="Name, DOI (Zenodo, Figshare), Data asset ID",
             query="Name, DOI",
         ),
     ],
     metadata={
-        "source": "foundingGIDE_metadata_fields.md",
+        "source": "resources/foundingGIDE_metadata_fields.md",
         "grain": "one row per data asset",
     },
 )
 
 
 def _storage_type(t: pa.DataType) -> pa.DataType:
-    """Replace every extension type (e.g. ``arrow.json``) with its storage type.
+    """Replace every extension type (e.g. ``arrow.json``) with its storage.
 
     ``pa.array`` cannot build extension types like ``arrow.json`` from Python
-    objects, so callers construct those fields using their storage type (a string
-    for JSON) and the table is cast to the real schema afterwards. Recurses
-    through structs and lists so extension fields at any depth are handled.
+    objects, so callers construct those fields using their storage type (a
+    string for JSON) and the table is cast to the real schema afterwards.
+    Recurses through structs and lists so extension fields at any depth are
+    handled.
     """
     if isinstance(t, pa.BaseExtensionType):
         return _storage_type(t.storage_type)
     if pa.types.is_struct(t):
         return pa.struct([f.with_type(_storage_type(f.type)) for f in t])
     if pa.types.is_large_list(t):
-        return pa.large_list(t.value_field.with_type(_storage_type(t.value_type)))
+        return pa.large_list(
+            t.value_field.with_type(_storage_type(t.value_type))
+        )
     if pa.types.is_list(t):
         return pa.list_(t.value_field.with_type(_storage_type(t.value_type)))
     return t
 
 
 def storage_schema() -> pa.Schema:
-    """``BIOPARQUET_SCHEMA`` with every extension type replaced by its storage type.
+    """``BIOPARQUET_SCHEMA`` with extensions replaced by storage types.
 
     Use this to construct data (``pa.array`` can't build extension types from
     Python objects), then ``cast`` the result to ``BIOPARQUET_SCHEMA``.
@@ -383,7 +411,7 @@ def storage_schema() -> pa.Schema:
 
 
 def build_table(rows) -> pa.Table:
-    """Build a table from a ``column -> values`` mapping, typed as ``BIOPARQUET_SCHEMA``.
+    """Build a table from a ``column -> values`` mapping as the schema.
 
     JSON (``arrow.json``) fields are supplied as JSON strings; they are built
     against the extension's string storage type and cast up to the real schema,
@@ -393,23 +421,30 @@ def build_table(rows) -> pa.Table:
 
 
 def main() -> None:
+    """Print the schema and write a schema-only Parquet template."""
     print(BIOPARQUET_SCHEMA.to_string(show_field_metadata=False))
     print(f"\n{len(BIOPARQUET_SCHEMA)} top-level components.")
 
-    # Write an empty, schema-only Parquet file as a reusable template. Build the
-    # empty table from the storage schema and cast up, since extension types
-    # (arrow.json) can't be materialised directly.
+    # Write an empty, schema-only Parquet file as a reusable template.
+    # Build the empty table from the storage schema and cast up, since
+    # extension types (arrow.json) can't be materialised directly.
     out = "bioparquet_metadata.parquet"
     empty = storage_schema().empty_table().cast(BIOPARQUET_SCHEMA)
     pq.write_table(empty, out)
 
-    # Round-trip to prove the schema is valid and persisted intact. Parquet adds
-    # its own "ARROW:schema" metadata on write, so compare structure (types)
-    # strictly and confirm the field-level documentation survived separately.
+    # Round-trip to prove the schema is valid and persisted intact.
+    # Parquet adds its own "ARROW:schema" metadata on write, so compare
+    # structure (types) strictly and confirm the field-level documentation
+    # survived separately.
     back = pq.read_schema(out)
-    assert back.equals(BIOPARQUET_SCHEMA, check_metadata=False), "schema round-trip mismatch"
-    assert back.field("description").metadata[b"description"] == b"Description of the data asset"
-    print(f"Wrote schema-only template -> {out} (round-trip OK, field docs preserved)")
+    assert back.equals(
+        BIOPARQUET_SCHEMA, check_metadata=False
+    ), "schema round-trip mismatch"
+    assert (
+        back.field("description").metadata[b"description"]
+        == b"Description of the data asset"
+    )
+    print(f"Wrote schema-only template -> {out} (round-trip OK)")
 
 
 if __name__ == "__main__":
