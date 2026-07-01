@@ -1,8 +1,32 @@
-# bioparquet
+# bioparquet-sandbox
+
+[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
+![Code Style](https://img.shields.io/badge/code%20style-black-black)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+![Interrogate](https://img.shields.io/badge/interrogate-100.0%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![Python](https://img.shields.io/badge/python->=3.10-blue?logo=python)
 
 A PyArrow Parquet implementation of the **foundingGIDE** (Global Image Data
 Exchange) bioimaging metadata standard. The schema is derived from
-[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md).
+[`foundingGIDE_metadata_fields.md`](resources/foundingGIDE_metadata_fields.md).
+
+## Installation
+To use the software, in the root directory, run
+```bash
+pip install -e .
+```
+
+To develop the code, run
+```bash
+pip install -e . --group dev
+```
+Note: --group flag is available only in pip versions >=25.1
+
+Alternatively, if using [uv](https://docs.astral.sh/uv/), run
+```bash
+uv sync
+```
 
 ## Model
 
@@ -30,7 +54,7 @@ repeats across them). The metadata *components* become 22 top-level columns:
 
 ## Deviations from the spec
 
-[`foundingGIDE_metadata_fields.md`](foundingGIDE_metadata_fields.md) mirrors the
+[`foundingGIDE_metadata_fields.md`](resources/foundingGIDE_metadata_fields.md) mirrors the
 standard verbatim. The schema deliberately renames a few components for clearer,
 collision-free column names — the descriptions still carry the original wording:
 
@@ -40,9 +64,9 @@ collision-free column names — the descriptions still carry the original wordin
 | Imaging Method | `acquisition_methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
 | Organ | `anatomical_location` | Generalized beyond organs; still UBERON/RadLex terms. |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
-| Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `study_id`/`data_asset_id` convention (no "unique" in the name). |
+| Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
@@ -77,36 +101,46 @@ own row, so the producing step lives with the asset it produced — not here.
 
 ## Usage
 
-```bash
-uv run bioparquet_schema.py
-```
+Print the schema and write `bioparquet_metadata.parquet` — an empty,
+schema-only template you can append rows to:
 
-This prints the schema and writes `bioparquet_metadata.parquet` — an empty,
-schema-only template you can append rows to.
+```bash
+uv run python -m bioparquet_sandbox.schema
+```
 
 Import the schema directly:
 
 ```python
-from bioparquet_schema import BIOPARQUET_SCHEMA
+from bioparquet_sandbox.schema import BIOPARQUET_SCHEMA
 ```
 
-## Example
+Build the example table (a fictional human iPSC cardiomyocyte live-imaging
+study), write it to `resources/bioparquet_example.parquet`, and read it back
+to confirm it validates against `BIOPARQUET_SCHEMA`:
 
 ```bash
-uv run example_table.py
+uv run python -m bioparquet_sandbox.example
 ```
 
-`example_table.py` populates every component with a realistic data asset row
-(a fictional human iPSC cardiomyocyte live-imaging study), writes it to
-`bioparquet_example.parquet`, and reads it back to confirm the data validates
-against `BIOPARQUET_SCHEMA`. It also serves as a reference for how to construct
-rows — nested structs as plain dicts, repeatable components as lists, JSON
-fields as JSON strings:
+`example.py` also serves as a reference for how to construct rows — nested
+structs as plain dicts, repeatable components as lists, JSON fields as JSON
+strings:
 
 ```python
-from bioparquet_schema import build_table
+from bioparquet_sandbox.schema import build_table
 
 # build_table types the data as BIOPARQUET_SCHEMA, handling arrow.json fields
 # (supply them as JSON strings).
 table = build_table(ROWS)
 ```
+
+## Level of Support
+Please indicate a level of support:
+ - [ ] Supported: We are releasing this code to the public as a tool we expect others to use. Issues are welcomed, and we expect to address them promptly; pull requests will be vetted by our staff before inclusion.
+ - [x] Occasional updates: We are planning on occasional updating this tool with no fixed schedule. Community involvement is encouraged through both issues and pull requests.
+ - [ ] Unsupported: We are not currently supporting this code, but simply releasing it to the community AS IS but are not able to provide any guarantees of support. The community is welcome to submit issues, but you should not expect an active response.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for linting, testing, and documentation
+guidelines.
