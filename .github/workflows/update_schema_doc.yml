@@ -1,0 +1,39 @@
+name: Update schema visualization
+
+# Regenerate resources/bioparquet_schema.md from BIOPARQUET_SCHEMA whenever a PR
+# that touches the schema is merged to main, and commit the result back so the
+# checked-in visualization always matches the schema.
+#
+# The commit only touches resources/bioparquet_schema.md, which is not in the
+# trigger paths below, so the push this workflow makes does not re-trigger it.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/bioparquet_sandbox/schema.py
+      - src/bioparquet_sandbox/visualize.py
+
+jobs:
+  update_schema_doc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        ref: main
+        fetch-depth: 0
+        token: ${{ secrets.SERVICE_TOKEN }}
+    - name: Set up Python 3.10
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: uv sync
+    - name: Regenerate schema visualization
+      run: uv run python -m bioparquet_sandbox.visualize
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        default_author: github_actions
+        message: "docs: update schema visualization [skip actions]"
+        add: '["resources/bioparquet_schema.md"]'
