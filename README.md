@@ -114,6 +114,20 @@ Import the schema directly:
 from bioparquet_sandbox.schema import BIOPARQUET_SCHEMA
 ```
 
+Regenerate the schema visualization — a Markdown reference of every field, its
+nested subfields, and their Description / Format / Access Query documentation,
+walked straight from `BIOPARQUET_SCHEMA`. Unlike the flat
+[`foundingGIDE_metadata_fields.md`](resources/foundingGIDE_metadata_fields.md)
+spec, it shows the nested `struct`/`list` subfields the schema has grown, so it
+stays faithful as the schema evolves:
+
+```bash
+uv run python -m bioparquet_sandbox.visualize
+```
+
+The output is written to
+[`resources/bioparquet_schema.md`](resources/bioparquet_schema.md).
+
 Build the example table (a fictional human iPSC cardiomyocyte live-imaging
 study), write it to `resources/bioparquet_example.parquet`, and read it back
 to confirm it validates against `BIOPARQUET_SCHEMA`:
