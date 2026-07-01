@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- given-names: "Allen Institute for Neural Dynamics"
+title: "bioparquet-sandbox"
+version: "v0.1.0"
+date-released: 2026-07-01
+url: "https://github.com/AllenNeuralDynamics/bioparquet-sandbox"
