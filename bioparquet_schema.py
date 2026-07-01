@@ -99,6 +99,7 @@ gene = pa.struct(
 
 organism = pa.struct(
     [
+        pa.field("organism_id", pa.string()),  # Organism Unique ID
         pa.field("ncbi_taxon_id", pa.string()),
         pa.field("term_label", pa.string()),
         pa.field("geographic_location", pa.string()),  # BioSample geo location
