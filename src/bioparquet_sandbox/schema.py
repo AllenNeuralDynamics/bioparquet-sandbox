@@ -4,7 +4,7 @@ The schema is derived 1:1 from ``resources/foundingGIDE_metadata_fields.md``.
 Each row of
 that table is a metadata *component*; here each component becomes one top-level
 column of a single wide table whose grain is **one row per data asset**
-(a study is composed of many data assets; ``study_id`` repeats across them).
+(a study is composed of many data assets; ``study`` repeats across them).
 
 Design notes
 ------------
@@ -254,7 +254,7 @@ axis = pa.struct(
     ]
 )
 
-study_id = pa.struct(
+study = pa.struct(
     [
         pa.field("accession_id", pa.string()),
         pa.field("doi", pa.string()),
@@ -392,9 +392,9 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Dimension specification, Pixel/voxel size, Time interval",
         ),
         col(
-            "study_id",
-            study_id,
-            description="Unique ID for the study",
+            "study",
+            study,
+            description="The study this data asset belongs to",
             fmt="Accession ID, DOI",
             query="Accession ID, DOI",
         ),
