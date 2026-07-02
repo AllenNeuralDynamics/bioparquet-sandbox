@@ -76,7 +76,7 @@ One row = one data asset. 18 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`size` | `int64` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`spacing` | `double` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`unit` | `string` |  |  |  |
-| **`study_id`** | `struct` | Unique ID for the study | Accession ID, DOI | Accession ID, DOI |
+| **`study`** | `struct` | The study this data asset belongs to | Accession ID, DOI | Accession ID, DOI |
 | &nbsp;&nbsp;&nbsp;&nbsp;`accession_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`doi` | `string` |  |  |  |
 | **`data_asset_id`** | `string` | Unique ID for the data asset | Accession ID | Accession ID |
