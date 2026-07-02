@@ -1,6 +1,6 @@
 # bioparquet schema
 
-One row = one data asset. 20 top-level components (**bold**); indented rows are nested subfields.
+One row = one data asset. 18 top-level components (**bold**); indented rows are nested subfields.
 
 | Field | Type | Description | Format | Access query |
 | --- | --- | --- | --- | --- |
@@ -28,7 +28,7 @@ One row = one data asset. 20 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| **`specimens`** | `list<struct>` | The biological specimen or model system imaged (cell line, primary culture, tissue, organoid, ...) | CLO, CL, BTO, or OBI term and ID; anatomical location (UBERON/RadLex) | Specimen ID, type, anatomical location |
+| **`specimens`** | `list<struct>` | The biological specimen or model system imaged (cell line, primary culture, tissue, organoid, ...) | CLO, CL, BTO, or OBI term and ID; anatomical location (UBERON/RadLex); genotype; treatments (ChEBI/PubChem) | Specimen ID, type, anatomical location, treatment |
 | &nbsp;&nbsp;&nbsp;&nbsp;`specimen_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`specimen_type` | `struct` | The kind of biological material imaged (cell line, cell type, tissue, organoid, ...) |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
@@ -38,33 +38,31 @@ One row = one data asset. 20 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`genotype` | `string` | Genetic modifications defining the specimen (reporter, tag, knock-in/out, edits) |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`treatments` | `list<struct>` | Compounds applied to the specimen as a treatment/perturbation |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`protocol_doi` | `string` | DOI of the protocol describing how the specimen was prepared |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`organisms`** | `list<struct>` | Information about the organism studied | NCBI Taxonomy term and ID, BioSample (geographic location) | NCBI Taxonomy ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`organism_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`ncbi_taxon_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`genotype` | `string` | The organism's genetic background (strain, alleles, reporter/tagged/knocked-out genes, edits) |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`geographic_location` | `string` | The place on Earth (e.g. country/region, per BioSample) where the organism was collected |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`pathology_disease` | `list<struct>` | Pathology/disease affecting the organism |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
-| **`genes`** | `list<struct>` | Information about related genes | Ensembl Gene or NCBI Gene name or ID | Gene ID, name |
-| &nbsp;&nbsp;&nbsp;&nbsp;`source` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`gene_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`gene_name` | `string` |  |  |  |
-| **`compounds`** | `list<struct>` | Information about the compound | ChEBI or PubChem term and ID | Compound ID, term |
-| &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | **`channels`** | `list<struct>` | Information about the channels (probe and target) | Ontology term and ID for the probe (with RRID) and the target | Probe ID/term/RRID, Target ID/term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`probe` | `struct` | The label/reagent applied or expressed |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`rrid` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`target` | `struct` | The biological molecule or structure detected |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`target` | `struct` | The biological molecule or structure detected; a gene/transcript (Ensembl/NCBI Gene) when imaging gene expression |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |

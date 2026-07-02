@@ -94,6 +94,14 @@ ROWS = {
                     "term_id": "UBERON:0000948",
                     "term_label": "heart",
                 },
+                "genotype": "mEGFP-TOMM20 knock-in (AICS-0011)",
+                "treatments": [
+                    {
+                        "ontology_source": "ChEBI",
+                        "term_id": "CHEBI:28748",
+                        "term_label": "doxorubicin",
+                    }
+                ],
                 "protocol_doi": "10.17504/protocols.io.abc123",
                 "additional_metadata": json.dumps(
                     {"differentiation": "cardiomyocyte", "passage": 12}
@@ -122,25 +130,6 @@ ROWS = {
                         "developmental_stage": "adult",
                     }
                 ),
-            }
-        ]
-    ],
-    "genes": [
-        [
-            {
-                "source": "Ensembl",
-                "gene_id": "ENSG00000198888",
-                "gene_name": "MT-ND1",
-            },
-            {"source": "NCBI Gene", "gene_id": "4535", "gene_name": "ND1"},
-        ]
-    ],
-    "compounds": [
-        [
-            {
-                "ontology_source": "ChEBI",
-                "term_id": "CHEBI:28748",
-                "term_label": "doxorubicin",
             }
         ]
     ],

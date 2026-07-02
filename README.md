@@ -31,12 +31,12 @@ uv sync
 ## Model
 
 One row = one data asset (a study is composed of many data assets, so `study_id`
-repeats across them). The metadata *components* become 20 top-level columns:
+repeats across them). The metadata *components* become 18 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
   (FBbi, NCBI Taxonomy, ChEBI, MONDO, UBERON, …) is preserved.
-- **Repeatable** components (authors, organisms, genes, acquisition methods, …)
+- **Repeatable** components (authors, organisms, acquisition methods, …)
   are `list<…>`.
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
   `probe` (the label/reagent applied or expressed) with the `target` (the
@@ -72,6 +72,9 @@ collision-free column names — the descriptions still carry the original wordin
 | Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Pathology/Disease (Biological Entity) | `organisms.pathology_disease` | Moved from a top-level component into the `organism` struct — the disease is a property of the organism/subject. Still SNOMED-CT/DOID/ICD-11/MONDO terms. |
+| _(none)_ | `organisms.genotype`, `specimens.genotype` | Added an explicit genotype field for genetic background/modifications — organism-level (strain, alleles) and specimen-level (reporter, tag, knock-in/out, edits, e.g. an engineered cell line). |
+| Gene | _(dropped)_ | Removed the standalone `genes` component. A gene is either a channel `target` (Ensembl/NCBI Gene as the `ontology_source`, for FISH/in situ/spatial transcriptomics) or genotype (`organisms.genotype`/`specimens.genotype`) — no dedicated column. |
+| Compound | `specimens.treatments` | Dropped the standalone `compounds` component. A compound applied to the specimen is a treatment/perturbation (`specimens.treatments`, ChEBI/PubChem); a dye/label compound is a channel `probe`. |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
 | Antibody | `channels.probe` (`rrid`) | Dropped the standalone `antibodies` component. An antibody is a channel's `probe` (label applied) detecting a `target`, so `probe` gained an `rrid` field to carry the antibody's Research Resource Identifier. |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
