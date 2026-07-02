@@ -202,7 +202,7 @@ ROWS = {
             },
         ]
     ],
-    "study_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
+    "study": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
     "data_asset_id": ["S-BIAD1234-1"],
     "phenotype": [
         [

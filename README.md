@@ -30,7 +30,7 @@ uv sync
 
 ## Model
 
-One row = one data asset (a study is composed of many data assets, so `study_id`
+One row = one data asset (a study is composed of many data assets, so `study`
 repeats across them). The metadata *components* become 18 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
@@ -66,9 +66,9 @@ collision-free column names — the descriptions still carry the original wordin
 | Imaging Method | `acquisition_methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
 | Organ | `anatomical_location` | Generalized beyond organs; still UBERON/RadLex terms. |
 | Cell Line | `specimens` | Generalized beyond cell lines to any imaged specimen/model system (primary culture, tissue, organoid, …); a `struct` of `specimen_id`, `specimen_type` (broadened from CLO-only to CLO/CL/BTO/OBI, so it now carries `ontology_source`), `anatomical_location` (UBERON/RadLex — where the specimen was taken from; the same concept as the asset-level `anatomical_location`, scoped to the specimen), `protocol_doi` (DOI of the specimen-preparation protocol, e.g. protocols.io), and `additional_metadata` (JSON) for free-form fields (passage, donor sex/age, disease state, …). |
-| Study Unique ID | `study_id` | Dropped "unique" from the name. |
+| Study Unique ID | `study` | Named `study` (not `study_id`) because it's a `struct` identifying the study — an `accession_id` and/or a `doi` — not a single id. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
-| _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `study_id`/`data_asset_id` convention (no "unique" in the name). |
+| _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `data_asset_id` convention (no "unique" in the name). |
 | Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Pathology/Disease (Biological Entity) | `organisms.pathology_disease` | Moved from a top-level component into the `organism` struct — the disease is a property of the organism/subject. Still SNOMED-CT/DOID/ICD-11/MONDO terms. |
@@ -81,7 +81,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |
 | _(none)_ | `processing.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form processing metadata (parameters, container image, commit) beyond name/url/rrid/version. Requires pyarrow ≥ 19. |
 
-The grain follows from this: one row per **data asset**, with `study_id`
+The grain follows from this: one row per **data asset**, with `study`
 repeating across the data assets that belong to the same study.
 
 The spec lists two separate channel components — *Channel – Content* and
