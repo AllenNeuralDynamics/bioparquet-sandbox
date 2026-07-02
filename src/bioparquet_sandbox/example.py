@@ -230,6 +230,9 @@ ROWS = {
                 "url": "https://github.com/Blosc/c-blosc2",
                 "rrid": None,
                 "version": "2.13.0",
+                "additional_metadata": json.dumps(
+                    {"codec": "zstd", "clevel": 5, "shuffle": "bitshuffle"}
+                ),
             }
         ]
     ],

@@ -93,6 +93,7 @@ One row = one data asset. 18 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`url` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`rrid` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`version` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`derived_data`** | `list<struct>` | Data assets derived from this one (each describes its own processing) | Name, DOI (Zenodo, Figshare), Data asset ID | Name, DOI |
 | &nbsp;&nbsp;&nbsp;&nbsp;`name` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`doi` | `string` |  |  |  |
