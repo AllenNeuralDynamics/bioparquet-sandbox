@@ -31,7 +31,7 @@ uv sync
 ## Model
 
 One row = one data asset (a study is composed of many data assets, so `study_id`
-repeats across them). The metadata *components* become 21 top-level columns:
+repeats across them). The metadata *components* become 20 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
@@ -40,7 +40,9 @@ repeats across them). The metadata *components* become 21 top-level columns:
   are `list<…>`.
 - **Channels** are a single `channels` list of a `channel` struct, pairing the
   `probe` (the label/reagent applied or expressed) with the `target` (the
-  biological molecule or structure detected) — each an `ontology_term`.
+  biological molecule or structure detected) — each an `ontology_term`. The
+  `probe` also carries an `rrid`, so an antibody-based probe records its
+  Research Resource Identifier.
 - **Axes** are a single `axes` list of an `axis` struct, carrying each axis's
   identity/extent (`name`, `type`, `size`) together with its physical `spacing`
   and `unit`.
@@ -71,6 +73,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
 | Pathology/Disease (Biological Entity) | `organisms.pathology_disease` | Moved from a top-level component into the `organism` struct — the disease is a property of the organism/subject. Still SNOMED-CT/DOID/ICD-11/MONDO terms. |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
+| Antibody | `channels.probe` (`rrid`) | Dropped the standalone `antibodies` component. An antibody is a channel's `probe` (label applied) detecting a `target`, so `probe` gained an `rrid` field to carry the antibody's Research Resource Identifier. |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
 | Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |
 
