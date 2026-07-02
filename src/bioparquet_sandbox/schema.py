@@ -25,14 +25,17 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 
-def ontology_term(*, source: bool = True) -> pa.DataType:
-    """A controlled-vocabulary reference (optional source, id, label)."""
+def ontology_term(*, source: bool = True, rrid: bool = False) -> pa.DataType:
+    """A controlled-vocabulary reference (optional source, id, label, rrid)."""
     fields = []
     if source:
         # e.g. "FBbi", "NCBI Taxonomy", "ChEBI", "MONDO" ...
         fields.append(pa.field("ontology_source", pa.string()))
     fields.append(pa.field("term_id", pa.string()))  # e.g. "NCBITaxon:9606"
     fields.append(pa.field("term_label", pa.string()))  # e.g. "Homo sapiens"
+    if rrid:
+        # Research Resource Identifier, e.g. an antibody's "AB_2532090".
+        fields.append(pa.field("rrid", pa.string()))
     return pa.struct(fields)
 
 
@@ -128,15 +131,6 @@ organism = pa.struct(
     ]
 )
 
-antibody = pa.struct(
-    [
-        pa.field("ontology_source", pa.string()),  # "FBbi" | "ChEBI"
-        pa.field("term_id", pa.string()),
-        pa.field("term_label", pa.string()),
-        pa.field("rrid", pa.string()),  # Research Resource Identifier
-    ]
-)
-
 # The biological specimen / model system imaged. Generalizes the spec's "Cell
 # Line" component beyond cell lines to any specimen (primary culture, tissue,
 # organoid, ...), so ``specimen_type`` spans several ontologies (CLO, CL, BTO,
@@ -185,13 +179,14 @@ specimen = pa.struct(
 
 # A single channel: the probe used to visualize and the target it detects,
 # each a controlled-vocabulary term (probe from ChEBI/FBbi, target from
-# UniProt/EFO/... -- hence the ontology source is kept). Data assets can have
-# many channels.
+# UniProt/EFO/... -- hence the ontology source is kept). The probe also carries
+# an ``rrid`` so an antibody-based probe records its Research Resource
+# Identifier. Data assets can have many channels.
 channel = pa.struct(
     [
         pa.field(
             "probe",
-            ontology_term(),
+            ontology_term(rrid=True),  # e.g. an antibody, with its RRID
             metadata={"description": "The label/reagent applied or expressed"},
         ),
         pa.field(
@@ -348,18 +343,14 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Compound ID, term",
         ),
         col(
-            "antibodies",
-            pa.list_(antibody),
-            description="Information about the antibody used",
-            fmt="FBbi or ChEBI term and ID, RRID",
-            query="Antibody ID, term",
-        ),
-        col(
             "channels",
             pa.list_(channel),
             description="Information about the channels (probe and target)",
-            fmt="Ontology term and ID for the probe and the target",
-            query="Probe ID/term, Target ID/term",
+            fmt=(
+                "Ontology term and ID for the probe (with RRID) and the "
+                "target"
+            ),
+            query="Probe ID/term/RRID, Target ID/term",
         ),
         col(
             "instrument",
