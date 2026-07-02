@@ -95,19 +95,21 @@ license_ = pa.struct(
     ]
 )
 
-gene = pa.struct(
-    [
-        pa.field("source", pa.string()),  # "Ensembl" | "NCBI Gene"
-        pa.field("gene_id", pa.string()),
-        pa.field("gene_name", pa.string()),
-    ]
-)
-
 organism = pa.struct(
     [
         pa.field("organism_id", pa.string()),  # Organism Unique ID
         pa.field("ncbi_taxon_id", pa.string()),
         pa.field("term_label", pa.string()),
+        pa.field(
+            "genotype",
+            pa.string(),
+            metadata={
+                "description": (
+                    "The organism's genetic background (strain, alleles, "
+                    "reporter/tagged/knocked-out genes, edits)"
+                )
+            },
+        ),
         pa.field(
             "geographic_location",
             pa.string(),
@@ -137,7 +139,9 @@ organism = pa.struct(
 # OBI) and keeps the ontology source. Its ``anatomical_location`` is where in
 # the organism the specimen was taken from (UBERON/RadLex) -- the same concept
 # as the asset-level ``anatomical_location`` component (the region the data
-# depicts), scoped to the specimen.
+# depicts), scoped to the specimen. ``genotype`` records modifications that
+# define an engineered specimen (e.g. a reporter cell line), and ``treatments``
+# the compounds applied to it (drugs, perturbations).
 specimen = pa.struct(
     [
         pa.field("specimen_id", pa.string()),
@@ -162,6 +166,26 @@ specimen = pa.struct(
             },
         ),
         pa.field(
+            "genotype",
+            pa.string(),
+            metadata={
+                "description": (
+                    "Genetic modifications defining the specimen (reporter, "
+                    "tag, knock-in/out, edits)"
+                )
+            },
+        ),
+        pa.field(
+            "treatments",
+            pa.list_(ontology_term()),  # ChEBI / PubChem
+            metadata={
+                "description": (
+                    "Compounds applied to the specimen as a "
+                    "treatment/perturbation"
+                )
+            },
+        ),
+        pa.field(
             "protocol_doi",
             pa.string(),  # e.g. a protocols.io DOI
             metadata={
@@ -181,7 +205,9 @@ specimen = pa.struct(
 # each a controlled-vocabulary term (probe from ChEBI/FBbi, target from
 # UniProt/EFO/... -- hence the ontology source is kept). The probe also carries
 # an ``rrid`` so an antibody-based probe records its Research Resource
-# Identifier. Data assets can have many channels.
+# Identifier. The target may be a gene/transcript (Ensembl or NCBI Gene as the
+# ontology source) when imaging gene expression (FISH, in situ hybridization,
+# spatial transcriptomics). Data assets can have many channels.
 channel = pa.struct(
     [
         pa.field(
@@ -191,9 +217,13 @@ channel = pa.struct(
         ),
         pa.field(
             "target",
-            ontology_term(),
+            ontology_term(),  # UniProt/EFO protein, or Ensembl/NCBI gene
             metadata={
-                "description": "The biological molecule or structure detected"
+                "description": (
+                    "The biological molecule or structure detected; a "
+                    "gene/transcript (Ensembl/NCBI Gene) when imaging "
+                    "gene expression"
+                )
             },
         ),
     ]
@@ -317,9 +347,9 @@ BIOPARQUET_SCHEMA = pa.schema(
             ),
             fmt=(
                 "CLO, CL, BTO, or OBI term and ID; anatomical location "
-                "(UBERON/RadLex)"
+                "(UBERON/RadLex); genotype; treatments (ChEBI/PubChem)"
             ),
-            query="Specimen ID, type, anatomical location",
+            query="Specimen ID, type, anatomical location, treatment",
         ),
         col(
             "organisms",
@@ -327,20 +357,6 @@ BIOPARQUET_SCHEMA = pa.schema(
             description="Information about the organism studied",
             fmt="NCBI Taxonomy term and ID, BioSample (geographic location)",
             query="NCBI Taxonomy ID, term",
-        ),
-        col(
-            "genes",
-            pa.list_(gene),
-            description="Information about related genes",
-            fmt="Ensembl Gene or NCBI Gene name or ID",
-            query="Gene ID, name",
-        ),
-        col(
-            "compounds",
-            pa.list_(ontology_term()),  # ChEBI / PubChem
-            description="Information about the compound",
-            fmt="ChEBI or PubChem term and ID",
-            query="Compound ID, term",
         ),
         col(
             "channels",
