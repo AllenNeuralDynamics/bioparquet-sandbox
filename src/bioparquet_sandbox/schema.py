@@ -273,6 +273,9 @@ processing = pa.struct(
             "rrid", pa.string()
         ),  # Research Resource Identifier (e.g. SCR_)
         pa.field("version", pa.string()),
+        # Free-form extra fields (e.g. parameters, container image, commit)
+        # as a JSON document.
+        pa.field("additional_metadata", pa.json_()),
     ]
 )
 

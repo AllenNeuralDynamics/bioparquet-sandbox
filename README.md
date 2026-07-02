@@ -79,6 +79,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Antibody | `channels.probe` (`rrid`) | Dropped the standalone `antibodies` component. An antibody is a channel's `probe` (label applied) detecting a `target`, so `probe` gained an `rrid` field to carry the antibody's Research Resource Identifier. |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
 | Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |
+| _(none)_ | `processing.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form processing metadata (parameters, container image, commit) beyond name/url/rrid/version. Requires pyarrow ≥ 19. |
 
 The grain follows from this: one row per **data asset**, with `study`
 repeating across the data assets that belong to the same study.
@@ -101,8 +102,10 @@ Conversely, the spec's *Analyzed Data* component is a grab-bag — it mixes the
 software/workflow that produced a result with the derived/annotation data
 products themselves, so any single row leaves most fields null and can't say
 what it describes. We split it by *direction* relative to the current row:
-`processing` (`name`, `url`, `rrid`, `version`) records what produced
-**this** data asset (e.g. the compression applied on write), while
+`processing` (`name`, `url`, `rrid`, `version`, `additional_metadata`) records
+what produced **this** data asset (e.g. the compression applied on write), with
+`additional_metadata` (JSON) for free-form fields (parameters, container image,
+commit), while
 `derived_data` (`name`, `doi`, `data_asset_id`) points to separate data assets
 derived **from** this one. A derived asset describes its own `processing` in its
 own row, so the producing step lives with the asset it produced — not here.
