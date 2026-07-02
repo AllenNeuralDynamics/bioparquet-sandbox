@@ -31,7 +31,7 @@ uv sync
 ## Model
 
 One row = one data asset (a study is composed of many data assets, so `study_id`
-repeats across them). The metadata *components* become 22 top-level columns:
+repeats across them). The metadata *components* become 21 top-level columns:
 
 - **Controlled-vocabulary** fields use a reusable `ontology_term` struct
   (`ontology_source`, `term_id`, `term_label`) so the source ontology
@@ -69,6 +69,7 @@ collision-free column names — the descriptions still carry the original wordin
 | _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `study_id`/`data_asset_id` convention (no "unique" in the name). |
 | Organism | `organisms.additional_metadata` | Added a JSON field (Arrow's `arrow.json`) for free-form organism metadata (strain, sex, developmental stage, BioSample attributes, …) beyond the spec's taxon/geographic fields. Requires pyarrow ≥ 19. |
 | Analyzed Data → Dataset ID | `derived_data.data_asset_id` | "Dataset" → "data asset". |
+| Pathology/Disease (Biological Entity) | `organisms.pathology_disease` | Moved from a top-level component into the `organism` struct — the disease is a property of the organism/subject. Still SNOMED-CT/DOID/ICD-11/MONDO terms. |
 | Channel – Content + Channel – Biological Entity | `channels` | Merged the two channel components into one `probe`/`target` entity (see below). |
 | Dimension + Pixel/Voxel Size/Time resolution | `axes` | Merged the two per-axis components into one entity (see below). |
 | Analyzed Data | `processing` + `derived_data` | Split the grab-bag component into two coherent entities (see below). |

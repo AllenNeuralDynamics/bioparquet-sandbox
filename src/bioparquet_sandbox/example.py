@@ -108,6 +108,13 @@ ROWS = {
                 "ncbi_taxon_id": "NCBITaxon:9606",
                 "term_label": "Homo sapiens",
                 "geographic_location": "USA: Washington",
+                "pathology_disease": [
+                    {
+                        "ontology_source": "MONDO",
+                        "term_id": "MONDO:0005267",
+                        "term_label": "heart disorder",
+                    }
+                ],
                 "additional_metadata": json.dumps(
                     {
                         "strain": "WTC-11",
@@ -217,15 +224,6 @@ ROWS = {
     ],
     "study_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
     "data_asset_id": ["S-BIAD1234-1"],
-    "pathology_disease": [
-        [
-            {
-                "ontology_source": "MONDO",
-                "term_id": "MONDO:0005267",
-                "term_label": "heart disorder",
-            }
-        ]
-    ],
     "phenotype": [
         [
             {
