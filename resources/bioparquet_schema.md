@@ -28,14 +28,23 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| **`cell_lines`** | `list<struct>` | Information about the cell line | Cell Line Ontology term and ID | CLO ID, term |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| **`specimens`** | `list<struct>` | The biological specimen or model system imaged (cell line, primary culture, tissue, organoid, ...) | CLO, CL, BTO, or OBI term and ID; anatomical location (UBERON/RadLex) | Specimen ID, type, anatomical location |
+| &nbsp;&nbsp;&nbsp;&nbsp;`specimen_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`specimen_type` | `struct` | The kind of biological material imaged (cell line, cell type, tissue, organoid, ...) |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`anatomical_location` | `struct` | The anatomical site in the organism the specimen was taken from |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`protocol_doi` | `string` | DOI of the protocol describing how the specimen was prepared |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`organisms`** | `list<struct>` | Information about the organism studied | NCBI Taxonomy term and ID, BioSample (geographic location) | NCBI Taxonomy ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`organism_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`ncbi_taxon_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`geographic_location` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`geographic_location` | `string` | The place on Earth (e.g. country/region, per BioSample) where the organism was collected |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`genes`** | `list<struct>` | Information about related genes | Ensembl Gene or NCBI Gene name or ID | Gene ID, name |
 | &nbsp;&nbsp;&nbsp;&nbsp;`source` | `string` |  |  |  |
@@ -81,7 +90,7 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| **`anatomical_location`** | `list<struct>` | Information about anatomical entities | UBERON, RadLex Ontology | UBERON ID, term |
+| **`anatomical_location`** | `list<struct>` | The anatomical region depicted by the data asset | UBERON, RadLex Ontology | UBERON ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |

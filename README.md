@@ -63,6 +63,7 @@ collision-free column names — the descriptions still carry the original wordin
 | Study Description | `description` | Describes the data asset (the row grain), not the study. |
 | Imaging Method | `acquisition_methods` | Generalized beyond imaging; still FBbi/EDAM ontology terms. |
 | Organ | `anatomical_location` | Generalized beyond organs; still UBERON/RadLex terms. |
+| Cell Line | `specimens` | Generalized beyond cell lines to any imaged specimen/model system (primary culture, tissue, organoid, …); a `struct` of `specimen_id`, `specimen_type` (broadened from CLO-only to CLO/CL/BTO/OBI, so it now carries `ontology_source`), `anatomical_location` (UBERON/RadLex — where the specimen was taken from; the same concept as the asset-level `anatomical_location`, scoped to the specimen), `protocol_doi` (DOI of the specimen-preparation protocol, e.g. protocols.io), and `additional_metadata` (JSON) for free-form fields (passage, donor sex/age, disease state, …). |
 | Study Unique ID | `study_id` | Dropped "unique" from the name. |
 | Dataset Unique ID | `data_asset_id` | "Dataset" → "data asset"; dropped "unique". |
 | _(none)_ | `organisms.organism_id` | Added a unique identifier for the organism (the spec has none); named to match the `study_id`/`data_asset_id` convention (no "unique" in the name). |

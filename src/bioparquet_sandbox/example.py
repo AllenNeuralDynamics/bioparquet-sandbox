@@ -80,11 +80,24 @@ ROWS = {
             }
         ]
     ],
-    "cell_lines": [
+    "specimens": [
         [
             {
-                "term_id": "CLO:0037317",
-                "term_label": "WTC-11 human iPSC line",
+                "specimen_id": "WTC-11-CM-001",
+                "specimen_type": {
+                    "ontology_source": "CLO",
+                    "term_id": "CLO:0037317",
+                    "term_label": "WTC-11 human iPSC line",
+                },
+                "anatomical_location": {
+                    "ontology_source": "UBERON",
+                    "term_id": "UBERON:0000948",
+                    "term_label": "heart",
+                },
+                "protocol_doi": "10.17504/protocols.io.abc123",
+                "additional_metadata": json.dumps(
+                    {"differentiation": "cardiomyocyte", "passage": 12}
+                ),
             }
         ]
     ],
