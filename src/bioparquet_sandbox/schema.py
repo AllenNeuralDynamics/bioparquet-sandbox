@@ -105,7 +105,16 @@ organism = pa.struct(
         pa.field("organism_id", pa.string()),  # Organism Unique ID
         pa.field("ncbi_taxon_id", pa.string()),
         pa.field("term_label", pa.string()),
-        pa.field("geographic_location", pa.string()),  # BioSample geo location
+        pa.field(
+            "geographic_location",
+            pa.string(),
+            metadata={
+                "description": (
+                    "The place on Earth (e.g. country/region, per BioSample) "
+                    "where the organism was collected"
+                )
+            },
+        ),
         # Free-form extra fields (e.g. strain, sex, developmental stage,
         # BioSample attributes) as a JSON document.
         pa.field("additional_metadata", pa.json_()),
@@ -124,9 +133,10 @@ antibody = pa.struct(
 # The biological specimen / model system imaged. Generalizes the spec's "Cell
 # Line" component beyond cell lines to any specimen (primary culture, tissue,
 # organoid, ...), so ``specimen_type`` spans several ontologies (CLO, CL, BTO,
-# OBI) and keeps the ontology source. ``anatomical_origin`` is where the
-# specimen was taken from (UBERON/RadLex) -- distinct from the asset-level
-# ``anatomical_location`` component, which is the region the data depicts.
+# OBI) and keeps the ontology source. Its ``anatomical_location`` is where in
+# the organism the specimen was taken from (UBERON/RadLex) -- the same concept
+# as the asset-level ``anatomical_location`` component (the region the data
+# depicts), scoped to the specimen.
 specimen = pa.struct(
     [
         pa.field("specimen_id", pa.string()),
@@ -141,10 +151,13 @@ specimen = pa.struct(
             },
         ),
         pa.field(
-            "anatomical_origin",
+            "anatomical_location",
             ontology_term(),  # UBERON / RadLex
             metadata={
-                "description": "Anatomical site the specimen was taken from"
+                "description": (
+                    "The anatomical site in the organism the specimen was "
+                    "taken from"
+                )
             },
         ),
         # Free-form extra fields (e.g. passage number, donor sex/age, disease
@@ -291,10 +304,10 @@ BIOPARQUET_SCHEMA = pa.schema(
                 "primary culture, tissue, organoid, ...)"
             ),
             fmt=(
-                "CLO, CL, BTO, or OBI term and ID; anatomical origin "
+                "CLO, CL, BTO, or OBI term and ID; anatomical location "
                 "(UBERON/RadLex)"
             ),
-            query="Specimen ID, type, anatomical origin",
+            query="Specimen ID, type, anatomical location",
         ),
         col(
             "organisms",
@@ -385,7 +398,7 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "anatomical_location",
             pa.list_(ontology_term()),  # UBERON / RadLex
-            description="Information about anatomical entities",
+            description="The anatomical region depicted by the data asset",
             fmt="UBERON, RadLex Ontology",
             query="UBERON ID, term",
         ),

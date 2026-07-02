@@ -89,7 +89,7 @@ ROWS = {
                     "term_id": "CLO:0037317",
                     "term_label": "WTC-11 human iPSC line",
                 },
-                "anatomical_origin": {
+                "anatomical_location": {
                     "ontology_source": "UBERON",
                     "term_id": "UBERON:0000948",
                     "term_label": "heart",

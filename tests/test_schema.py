@@ -41,7 +41,7 @@ class SchemaTest(unittest.TestCase):
             [
                 "specimen_id",
                 "specimen_type",
-                "anatomical_origin",
+                "anatomical_location",
                 "additional_metadata",
             ],
         )
