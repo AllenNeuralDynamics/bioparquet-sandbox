@@ -1,6 +1,6 @@
 # bioparquet schema
 
-One row = one data asset. 21 top-level components (**bold**); indented rows are nested subfields.
+One row = one data asset. 20 top-level components (**bold**); indented rows are nested subfields.
 
 | Field | Type | Description | Format | Access query |
 | --- | --- | --- | --- | --- |
@@ -58,16 +58,12 @@ One row = one data asset. 21 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| **`antibodies`** | `list<struct>` | Information about the antibody used | FBbi or ChEBI term and ID, RRID | Antibody ID, term |
-| &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`rrid` | `string` |  |  |  |
-| **`channels`** | `list<struct>` | Information about the channels (probe and target) | Ontology term and ID for the probe and the target | Probe ID/term, Target ID/term |
+| **`channels`** | `list<struct>` | Information about the channels (probe and target) | Ontology term and ID for the probe (with RRID) and the target | Probe ID/term/RRID, Target ID/term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`probe` | `struct` | The label/reagent applied or expressed |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`rrid` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`target` | `struct` | The biological molecule or structure detected |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |

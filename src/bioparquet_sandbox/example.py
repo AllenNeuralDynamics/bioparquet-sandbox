@@ -144,23 +144,14 @@ ROWS = {
             }
         ]
     ],
-    "antibodies": [
-        [
-            {
-                "ontology_source": "ChEBI",
-                "term_id": "CHEBI:52214",
-                "term_label": "anti-TOM20 antibody",
-                "rrid": "AB_2207533",
-            }
-        ]
-    ],
     "channels": [
         [
             {
                 "probe": {
                     "ontology_source": "ChEBI",
-                    "term_id": "CHEBI:87173",
-                    "term_label": "Alexa Fluor 488",
+                    "term_id": "CHEBI:52214",
+                    "term_label": "anti-TOM20 antibody",
+                    "rrid": "AB_2207533",
                 },
                 "target": {
                     "ontology_source": "UniProt",

@@ -20,8 +20,16 @@ class SchemaTest(unittest.TestCase):
     """Tests the bioparquet schema definition and helpers."""
 
     def test_top_level_component_count(self):
-        """The schema exposes 21 top-level components."""
-        self.assertEqual(len(BIOPARQUET_SCHEMA), 21)
+        """The schema exposes 20 top-level components."""
+        self.assertEqual(len(BIOPARQUET_SCHEMA), 20)
+
+    def test_channel_probe_carries_rrid(self):
+        """The channel probe carries an rrid; the target does not."""
+        channel = BIOPARQUET_SCHEMA.field("channels").type.value_type
+        probe = channel.field("probe").type
+        target = channel.field("target").type
+        self.assertIn("rrid", [f.name for f in probe])
+        self.assertNotIn("rrid", [f.name for f in target])
 
     def test_organism_fields(self):
         """The organism struct carries the added identifier, disease, JSON."""
