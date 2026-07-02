@@ -160,6 +160,16 @@ specimen = pa.struct(
                 )
             },
         ),
+        pa.field(
+            "protocol_doi",
+            pa.string(),  # e.g. a protocols.io DOI
+            metadata={
+                "description": (
+                    "DOI of the protocol describing how the specimen was "
+                    "prepared"
+                )
+            },
+        ),
         # Free-form extra fields (e.g. passage number, donor sex/age, disease
         # state, culture conditions) as a JSON document.
         pa.field("additional_metadata", pa.json_()),

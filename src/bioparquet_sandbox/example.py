@@ -94,6 +94,7 @@ ROWS = {
                     "term_id": "UBERON:0000948",
                     "term_label": "heart",
                 },
+                "protocol_doi": "10.17504/protocols.io.abc123",
                 "additional_metadata": json.dumps(
                     {"differentiation": "cardiomyocyte", "passage": 12}
                 ),

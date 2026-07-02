@@ -38,6 +38,7 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`protocol_doi` | `string` | DOI of the protocol describing how the specimen was prepared |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`organisms`** | `list<struct>` | Information about the organism studied | NCBI Taxonomy term and ID, BioSample (geographic location) | NCBI Taxonomy ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`organism_id` | `string` |  |  |  |

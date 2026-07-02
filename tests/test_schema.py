@@ -42,6 +42,7 @@ class SchemaTest(unittest.TestCase):
                 "specimen_id",
                 "specimen_type",
                 "anatomical_location",
+                "protocol_doi",
                 "additional_metadata",
             ],
         )
