@@ -80,11 +80,24 @@ ROWS = {
             }
         ]
     ],
-    "cell_lines": [
+    "specimens": [
         [
             {
-                "term_id": "CLO:0037317",
-                "term_label": "WTC-11 human iPSC line",
+                "specimen_id": "WTC-11-CM-001",
+                "specimen_type": {
+                    "ontology_source": "CLO",
+                    "term_id": "CLO:0037317",
+                    "term_label": "WTC-11 human iPSC line",
+                },
+                "anatomical_location": {
+                    "ontology_source": "UBERON",
+                    "term_id": "UBERON:0000948",
+                    "term_label": "heart",
+                },
+                "protocol_doi": "10.17504/protocols.io.abc123",
+                "additional_metadata": json.dumps(
+                    {"differentiation": "cardiomyocyte", "passage": 12}
+                ),
             }
         ]
     ],
@@ -95,6 +108,13 @@ ROWS = {
                 "ncbi_taxon_id": "NCBITaxon:9606",
                 "term_label": "Homo sapiens",
                 "geographic_location": "USA: Washington",
+                "pathology_disease": [
+                    {
+                        "ontology_source": "MONDO",
+                        "term_id": "MONDO:0005267",
+                        "term_label": "heart disorder",
+                    }
+                ],
                 "additional_metadata": json.dumps(
                     {
                         "strain": "WTC-11",
@@ -204,15 +224,6 @@ ROWS = {
     ],
     "study_id": [{"accession_id": "S-BIAD1234", "doi": "10.6019/S-BIAD1234"}],
     "data_asset_id": ["S-BIAD1234-1"],
-    "pathology_disease": [
-        [
-            {
-                "ontology_source": "MONDO",
-                "term_id": "MONDO:0005267",
-                "term_label": "heart disorder",
-            }
-        ]
-    ],
     "phenotype": [
         [
             {

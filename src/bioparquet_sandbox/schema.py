@@ -105,7 +105,23 @@ organism = pa.struct(
         pa.field("organism_id", pa.string()),  # Organism Unique ID
         pa.field("ncbi_taxon_id", pa.string()),
         pa.field("term_label", pa.string()),
-        pa.field("geographic_location", pa.string()),  # BioSample geo location
+        pa.field(
+            "geographic_location",
+            pa.string(),
+            metadata={
+                "description": (
+                    "The place on Earth (e.g. country/region, per BioSample) "
+                    "where the organism was collected"
+                )
+            },
+        ),
+        pa.field(
+            "pathology_disease",
+            pa.list_(ontology_term()),  # SNOMED-CT / DOID / ICD-11 / MONDO
+            metadata={
+                "description": "Pathology/disease affecting the organism"
+            },
+        ),
         # Free-form extra fields (e.g. strain, sex, developmental stage,
         # BioSample attributes) as a JSON document.
         pa.field("additional_metadata", pa.json_()),
@@ -118,6 +134,52 @@ antibody = pa.struct(
         pa.field("term_id", pa.string()),
         pa.field("term_label", pa.string()),
         pa.field("rrid", pa.string()),  # Research Resource Identifier
+    ]
+)
+
+# The biological specimen / model system imaged. Generalizes the spec's "Cell
+# Line" component beyond cell lines to any specimen (primary culture, tissue,
+# organoid, ...), so ``specimen_type`` spans several ontologies (CLO, CL, BTO,
+# OBI) and keeps the ontology source. Its ``anatomical_location`` is where in
+# the organism the specimen was taken from (UBERON/RadLex) -- the same concept
+# as the asset-level ``anatomical_location`` component (the region the data
+# depicts), scoped to the specimen.
+specimen = pa.struct(
+    [
+        pa.field("specimen_id", pa.string()),
+        pa.field(
+            "specimen_type",
+            ontology_term(),  # CLO / CL / BTO / OBI
+            metadata={
+                "description": (
+                    "The kind of biological material imaged (cell line, "
+                    "cell type, tissue, organoid, ...)"
+                )
+            },
+        ),
+        pa.field(
+            "anatomical_location",
+            ontology_term(),  # UBERON / RadLex
+            metadata={
+                "description": (
+                    "The anatomical site in the organism the specimen was "
+                    "taken from"
+                )
+            },
+        ),
+        pa.field(
+            "protocol_doi",
+            pa.string(),  # e.g. a protocols.io DOI
+            metadata={
+                "description": (
+                    "DOI of the protocol describing how the specimen was "
+                    "prepared"
+                )
+            },
+        ),
+        # Free-form extra fields (e.g. passage number, donor sex/age, disease
+        # state, culture conditions) as a JSON document.
+        pa.field("additional_metadata", pa.json_()),
     ]
 )
 
@@ -252,11 +314,17 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="FBbi or EDAM Bioimaging Ontology ID, term",
         ),
         col(
-            "cell_lines",
-            pa.list_(ontology_term(source=False)),  # CLO
-            description="Information about the cell line",
-            fmt="Cell Line Ontology term and ID",
-            query="CLO ID, term",
+            "specimens",
+            pa.list_(specimen),  # CLO/CL/BTO/OBI (+ UBERON/RadLex origin)
+            description=(
+                "The biological specimen or model system imaged (cell line, "
+                "primary culture, tissue, organoid, ...)"
+            ),
+            fmt=(
+                "CLO, CL, BTO, or OBI term and ID; anatomical location "
+                "(UBERON/RadLex)"
+            ),
+            query="Specimen ID, type, anatomical location",
         ),
         col(
             "organisms",
@@ -331,13 +399,6 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="Accession ID",
         ),
         col(
-            "pathology_disease",
-            pa.list_(ontology_term()),  # SNOMED-CT / DOID / ICD-11 / MONDO
-            description="Pathology/Disease related to the biological entity",
-            fmt="SNOMED-CT, DOID, ICD-11 or MONDO",
-            query="Pathology/Disease ID, term",
-        ),
-        col(
             "phenotype",
             pa.list_(ontology_term()),  # CMPO / MPO / HPO
             description="Phenotypic data related to the analysis",
@@ -347,7 +408,7 @@ BIOPARQUET_SCHEMA = pa.schema(
         col(
             "anatomical_location",
             pa.list_(ontology_term()),  # UBERON / RadLex
-            description="Information about anatomical entities",
+            description="The anatomical region depicted by the data asset",
             fmt="UBERON, RadLex Ontology",
             query="UBERON ID, term",
         ),

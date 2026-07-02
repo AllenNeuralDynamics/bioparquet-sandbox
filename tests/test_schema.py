@@ -20,16 +20,37 @@ class SchemaTest(unittest.TestCase):
     """Tests the bioparquet schema definition and helpers."""
 
     def test_top_level_component_count(self):
-        """The schema exposes 22 top-level components."""
-        self.assertEqual(len(BIOPARQUET_SCHEMA), 22)
+        """The schema exposes 21 top-level components."""
+        self.assertEqual(len(BIOPARQUET_SCHEMA), 21)
 
     def test_organism_fields(self):
-        """The organism struct carries the added identifier and JSON."""
+        """The organism struct carries the added identifier, disease, JSON."""
         organism = BIOPARQUET_SCHEMA.field("organisms").type.value_type
         names = [f.name for f in organism]
         self.assertIn("organism_id", names)
+        self.assertIn("pathology_disease", names)
         self.assertIn("additional_metadata", names)
         json_field = organism.field("additional_metadata")
+        self.assertIsInstance(json_field.type, pa.JsonType)
+
+    def test_specimen_fields(self):
+        """The specimen struct generalizes cell_lines with source + origin."""
+        specimen = BIOPARQUET_SCHEMA.field("specimens").type.value_type
+        names = [f.name for f in specimen]
+        self.assertEqual(
+            names,
+            [
+                "specimen_id",
+                "specimen_type",
+                "anatomical_location",
+                "protocol_doi",
+                "additional_metadata",
+            ],
+        )
+        # specimen_type spans several ontologies, so it keeps the source.
+        specimen_type = specimen.field("specimen_type").type
+        self.assertIn("ontology_source", [f.name for f in specimen_type])
+        json_field = specimen.field("additional_metadata")
         self.assertIsInstance(json_field.type, pa.JsonType)
 
     def test_storage_schema_replaces_extensions(self):
