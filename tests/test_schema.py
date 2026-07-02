@@ -20,14 +20,15 @@ class SchemaTest(unittest.TestCase):
     """Tests the bioparquet schema definition and helpers."""
 
     def test_top_level_component_count(self):
-        """The schema exposes 22 top-level components."""
-        self.assertEqual(len(BIOPARQUET_SCHEMA), 22)
+        """The schema exposes 21 top-level components."""
+        self.assertEqual(len(BIOPARQUET_SCHEMA), 21)
 
     def test_organism_fields(self):
-        """The organism struct carries the added identifier and JSON."""
+        """The organism struct carries the added identifier, disease, JSON."""
         organism = BIOPARQUET_SCHEMA.field("organisms").type.value_type
         names = [f.name for f in organism]
         self.assertIn("organism_id", names)
+        self.assertIn("pathology_disease", names)
         self.assertIn("additional_metadata", names)
         json_field = organism.field("additional_metadata")
         self.assertIsInstance(json_field.type, pa.JsonType)

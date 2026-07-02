@@ -1,6 +1,6 @@
 # bioparquet schema
 
-One row = one data asset. 22 top-level components (**bold**); indented rows are nested subfields.
+One row = one data asset. 21 top-level components (**bold**); indented rows are nested subfields.
 
 | Field | Type | Description | Format | Access query |
 | --- | --- | --- | --- | --- |
@@ -45,6 +45,10 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ncbi_taxon_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`geographic_location` | `string` | The place on Earth (e.g. country/region, per BioSample) where the organism was collected |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`pathology_disease` | `list<struct>` | Pathology/disease affecting the organism |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`genes`** | `list<struct>` | Information about related genes | Ensembl Gene or NCBI Gene name or ID | Gene ID, name |
 | &nbsp;&nbsp;&nbsp;&nbsp;`source` | `string` |  |  |  |
@@ -82,10 +86,6 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`accession_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`doi` | `string` |  |  |  |
 | **`data_asset_id`** | `string` | Unique ID for the data asset | Accession ID | Accession ID |
-| **`pathology_disease`** | `list<struct>` | Pathology/Disease related to the biological entity | SNOMED-CT, DOID, ICD-11 or MONDO | Pathology/Disease ID, term |
-| &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
 | **`phenotype`** | `list<struct>` | Phenotypic data related to the analysis | Cell Morphology Phenotype Ontology, MPO, or HPO | Phenotype ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |

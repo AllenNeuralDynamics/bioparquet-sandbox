@@ -115,6 +115,13 @@ organism = pa.struct(
                 )
             },
         ),
+        pa.field(
+            "pathology_disease",
+            pa.list_(ontology_term()),  # SNOMED-CT / DOID / ICD-11 / MONDO
+            metadata={
+                "description": "Pathology/disease affecting the organism"
+            },
+        ),
         # Free-form extra fields (e.g. strain, sex, developmental stage,
         # BioSample attributes) as a JSON document.
         pa.field("additional_metadata", pa.json_()),
@@ -390,13 +397,6 @@ BIOPARQUET_SCHEMA = pa.schema(
             description="Unique ID for the data asset",
             fmt="Accession ID",
             query="Accession ID",
-        ),
-        col(
-            "pathology_disease",
-            pa.list_(ontology_term()),  # SNOMED-CT / DOID / ICD-11 / MONDO
-            description="Pathology/Disease related to the biological entity",
-            fmt="SNOMED-CT, DOID, ICD-11 or MONDO",
-            query="Pathology/Disease ID, term",
         ),
         col(
             "phenotype",
