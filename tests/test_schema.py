@@ -32,6 +32,25 @@ class SchemaTest(unittest.TestCase):
         json_field = organism.field("additional_metadata")
         self.assertIsInstance(json_field.type, pa.JsonType)
 
+    def test_specimen_fields(self):
+        """The specimen struct generalizes cell_lines with source + origin."""
+        specimen = BIOPARQUET_SCHEMA.field("specimens").type.value_type
+        names = [f.name for f in specimen]
+        self.assertEqual(
+            names,
+            [
+                "specimen_id",
+                "specimen_type",
+                "anatomical_origin",
+                "additional_metadata",
+            ],
+        )
+        # specimen_type spans several ontologies, so it keeps the source.
+        specimen_type = specimen.field("specimen_type").type
+        self.assertIn("ontology_source", [f.name for f in specimen_type])
+        json_field = specimen.field("additional_metadata")
+        self.assertIsInstance(json_field.type, pa.JsonType)
+
     def test_storage_schema_replaces_extensions(self):
         """storage_schema swaps arrow.json for its string storage type."""
         organism = storage_schema().field("organisms").type.value_type

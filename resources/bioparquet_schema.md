@@ -28,9 +28,17 @@ One row = one data asset. 22 top-level components (**bold**); indented rows are 
 | &nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
-| **`cell_lines`** | `list<struct>` | Information about the cell line | Cell Line Ontology term and ID | CLO ID, term |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
-| &nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| **`specimens`** | `list<struct>` | The biological specimen or model system imaged (cell line, primary culture, tissue, organoid, ...) | CLO, CL, BTO, or OBI term and ID; anatomical origin (UBERON/RadLex) | Specimen ID, type, anatomical origin |
+| &nbsp;&nbsp;&nbsp;&nbsp;`specimen_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`specimen_type` | `struct` | The kind of biological material imaged (cell line, cell type, tissue, organoid, ...) |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`anatomical_origin` | `struct` | Anatomical site the specimen was taken from |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`ontology_source` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_id` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`term_label` | `string` |  |  |  |
+| &nbsp;&nbsp;&nbsp;&nbsp;`additional_metadata` | `arrow.json` |  |  |  |
 | **`organisms`** | `list<struct>` | Information about the organism studied | NCBI Taxonomy term and ID, BioSample (geographic location) | NCBI Taxonomy ID, term |
 | &nbsp;&nbsp;&nbsp;&nbsp;`organism_id` | `string` |  |  |  |
 | &nbsp;&nbsp;&nbsp;&nbsp;`ncbi_taxon_id` | `string` |  |  |  |

@@ -121,6 +121,38 @@ antibody = pa.struct(
     ]
 )
 
+# The biological specimen / model system imaged. Generalizes the spec's "Cell
+# Line" component beyond cell lines to any specimen (primary culture, tissue,
+# organoid, ...), so ``specimen_type`` spans several ontologies (CLO, CL, BTO,
+# OBI) and keeps the ontology source. ``anatomical_origin`` is where the
+# specimen was taken from (UBERON/RadLex) -- distinct from the asset-level
+# ``anatomical_location`` component, which is the region the data depicts.
+specimen = pa.struct(
+    [
+        pa.field("specimen_id", pa.string()),
+        pa.field(
+            "specimen_type",
+            ontology_term(),  # CLO / CL / BTO / OBI
+            metadata={
+                "description": (
+                    "The kind of biological material imaged (cell line, "
+                    "cell type, tissue, organoid, ...)"
+                )
+            },
+        ),
+        pa.field(
+            "anatomical_origin",
+            ontology_term(),  # UBERON / RadLex
+            metadata={
+                "description": "Anatomical site the specimen was taken from"
+            },
+        ),
+        # Free-form extra fields (e.g. passage number, donor sex/age, disease
+        # state, culture conditions) as a JSON document.
+        pa.field("additional_metadata", pa.json_()),
+    ]
+)
+
 # A single channel: the probe used to visualize and the target it detects,
 # each a controlled-vocabulary term (probe from ChEBI/FBbi, target from
 # UniProt/EFO/... -- hence the ontology source is kept). Data assets can have
@@ -252,11 +284,17 @@ BIOPARQUET_SCHEMA = pa.schema(
             query="FBbi or EDAM Bioimaging Ontology ID, term",
         ),
         col(
-            "cell_lines",
-            pa.list_(ontology_term(source=False)),  # CLO
-            description="Information about the cell line",
-            fmt="Cell Line Ontology term and ID",
-            query="CLO ID, term",
+            "specimens",
+            pa.list_(specimen),  # CLO/CL/BTO/OBI (+ UBERON/RadLex origin)
+            description=(
+                "The biological specimen or model system imaged (cell line, "
+                "primary culture, tissue, organoid, ...)"
+            ),
+            fmt=(
+                "CLO, CL, BTO, or OBI term and ID; anatomical origin "
+                "(UBERON/RadLex)"
+            ),
+            query="Specimen ID, type, anatomical origin",
         ),
         col(
             "organisms",
