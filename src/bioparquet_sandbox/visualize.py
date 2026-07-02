@@ -8,9 +8,10 @@ no longer a faithful picture of the schema.
 
 This module walks ``BIOPARQUET_SCHEMA`` and renders every field, its nested
 subfields, and the Description / Format / Access Query documentation carried in
-Arrow field metadata to a Markdown document
-(``resources/bioparquet_schema.md``) you can browse on GitHub. It is generated
-from the schema itself, so it stays in step as the schema evolves.
+Arrow field metadata to a single Markdown table
+(``resources/bioparquet_schema.md``) you can browse on GitHub. Each field is
+one row; subfields are indented beneath their parent. It is generated from the
+schema itself, so it stays in step as the schema evolves.
 """
 
 from __future__ import annotations
@@ -56,60 +57,48 @@ def _subfields(dtype: pa.DataType) -> list[pa.Field]:
     return []
 
 
-def _render_subfields(dtype: pa.DataType, indent: int = 0) -> list[str]:
-    """Bulleted, indented Markdown lines for a field's nested subfields."""
-    lines: list[str] = []
-    for field in _subfields(dtype):
-        pad = "  " * indent
-        desc = _meta(field, "description")
-        suffix = f" — {desc}" if desc else ""
-        lines.append(
-            f"{pad}- `{field.name}` `{_type_label(field.type)}`{suffix}"
-        )
-        lines.extend(_render_subfields(field.type, indent + 1))
-    return lines
+def _escape(text: str) -> str:
+    """Escape characters that would break a Markdown table cell."""
+    return text.replace("|", "\\|").replace("\n", " ")
+
+
+def _field_rows(field: pa.Field, depth: int = 0) -> list[str]:
+    """One table row for a field, then rows for its nested subfields.
+
+    Depth-0 (top-level) field names are bold; deeper ones are indented with
+    non-breaking spaces so the nesting survives GitHub's table rendering.
+    """
+    name = f"`{field.name}`"
+    if depth == 0:
+        name = f"**{name}**"
+    else:
+        name = "&nbsp;&nbsp;&nbsp;&nbsp;" * depth + name
+    cells = [
+        name,
+        f"`{_type_label(field.type)}`",
+        _escape(_meta(field, "description") or ""),
+        _escape(_meta(field, "format") or ""),
+        _escape(_meta(field, "access_query") or ""),
+    ]
+    rows = ["| " + " | ".join(cells) + " |"]
+    for sub in _subfields(field.type):
+        rows.extend(_field_rows(sub, depth + 1))
+    return rows
 
 
 def render_markdown(schema: pa.Schema = BIOPARQUET_SCHEMA) -> str:
-    """Render ``schema`` as a Markdown document of fields and subfields."""
+    """Render ``schema`` as a single Markdown table of fields and subfields."""
     lines = [
         "# bioparquet schema",
         "",
-        "_Generated from `BIOPARQUET_SCHEMA` in "
-        "`src/bioparquet_sandbox/schema.py` by "
-        "`bioparquet_sandbox.visualize`. Do not edit by hand — run "
-        "`python -m bioparquet_sandbox.visualize`._",
+        f"One row = one data asset. {len(schema)} top-level components "
+        "(**bold**); indented rows are nested subfields.",
         "",
-        f"One row = one data asset. {len(schema)} top-level components.",
-        "",
+        "| Field | Type | Description | Format | Access query |",
+        "| --- | --- | --- | --- | --- |",
     ]
     for field in schema:
-        lines.append(f"## {field.name}")
-        lines.append("")
-        lines.append(f"`{_type_label(field.type)}`")
-        lines.append("")
-
-        desc = _meta(field, "description")
-        if desc:
-            lines.append(desc)
-            lines.append("")
-
-        fmt = _meta(field, "format")
-        query = _meta(field, "access_query")
-        if fmt:
-            lines.append(f"- **Format:** {fmt}")
-        if query:
-            lines.append(f"- **Access query:** {query}")
-        if fmt or query:
-            lines.append("")
-
-        subs = _render_subfields(field.type)
-        if subs:
-            lines.append("**Fields:**")
-            lines.append("")
-            lines.extend(subs)
-            lines.append("")
-
+        lines.extend(_field_rows(field))
     return "\n".join(lines).rstrip() + "\n"
 
 
